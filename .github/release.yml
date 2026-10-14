@@ -1,0 +1,21 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+    authors:
+      - octocat
+  categories:
+    - title: Breaking Changes 🛠
+      labels:
+        - Ver-Major
+        - breaking-change
+    - title: Exciting New Features 🎉
+      labels:
+        - Ver-Minor
+        - enhancement
+    - title: Bug fixes 🐛
+      labels:
+        - bug
+    - title: Other Changes
+      labels:
+        - "*"
