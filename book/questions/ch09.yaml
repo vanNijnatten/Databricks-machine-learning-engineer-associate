@@ -1,0 +1,211 @@
+- id: Q-09-001
+  objective: S3.03
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A data scientist builds a Spark ML pipeline with StringIndexer, OneHotEncoder, VectorAssembler and
+    RandomForestClassifier. Which stage is a transformer that does not need to be fitted?
+  options:
+    A: StringIndexer
+    B: OneHotEncoder
+    C: VectorAssembler
+    D: RandomForestClassifier
+  answer: [C]
+  explanation: >-
+    VectorAssembler only concatenates existing columns into a vector; it learns nothing from the
+    data, so it is a pure transformer.
+  distractors:
+    A: StringIndexer must learn the set of categories and their order, so it is an estimator.
+    B: In Spark 3+ OneHotEncoder learns the number of categories, so it is an estimator.
+    D: Every learning algorithm is an estimator; its fitted model is the transformer.
+  chapter_ref: 09-pipelines.md#estimators-transformers-and-models
+
+- id: Q-09-002
+  objective: S3.03
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    In Spark ML, what does calling fit() on a LogisticRegression estimator with a training DataFrame
+    return?
+  options:
+    A: A DataFrame with a prediction column
+    B: A LogisticRegressionModel, which is a transformer
+    C: A single float with the training accuracy
+    D: Nothing; the estimator object is updated in place
+  answer: [B]
+  explanation: >-
+    Spark ML estimators return a new Model object from fit(); the model is a transformer whose
+    transform() adds prediction columns.
+  distractors:
+    A: Predictions are produced by the fitted model's transform(), not by fit().
+    C: Metrics come from an evaluator applied to predictions.
+    D: Updating in place is scikit-learn's convention, not Spark ML's.
+  chapter_ref: 09-pipelines.md#estimators-transformers-and-models
+
+- id: Q-09-003
+  objective: S3.03
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO statements about Spark ML pipelines are correct?
+  options:
+    A: A Pipeline is an estimator
+    B: A PipelineModel contains only transformers
+    C: A Pipeline can only contain transformers
+    D: fit() on a Pipeline fits every stage on the original input DataFrame, ignoring earlier stages
+    E: A PipelineModel must be refitted before every call to transform()
+  answer: [A, B]
+  explanation: >-
+    Pipeline.fit() runs the stages in order, replacing each estimator with its fitted model, and
+    returns a PipelineModel made only of transformers.
+  distractors:
+    C: Pipelines routinely contain estimators such as indexers and algorithms.
+    D: Each stage is fitted on the output of the previous stages.
+    E: A fitted PipelineModel can transform any number of DataFrames.
+  chapter_ref: 09-pipelines.md#building-a-spark-ml-training-pipeline
+
+- id: Q-09-004
+  objective: S3.04
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A Spark ML training job fails with an error saying that the column "features" does not exist.
+    The DataFrame has numeric columns age, income and tenure, and the code fits
+    LogisticRegression(labelCol="label") directly on it. What is missing?
+  options:
+    A: A StringIndexer on the label column
+    B: A VectorAssembler that combines the numeric columns into a features vector column
+    C: A call to cache() on the DataFrame
+    D: A StandardScaler with withMean=True
+  answer: [B]
+  explanation: >-
+    Spark ML algorithms read a single vector column (featuresCol, default "features"); a
+    VectorAssembler must create it from the individual columns.
+  distractors:
+    A: A numeric label is already valid; indexing it would not create the features column.
+    C: Caching affects performance, not the schema.
+    D: A scaler also expects a vector column as input and does not create "features" from separate columns.
+  chapter_ref: 09-pipelines.md#building-a-spark-ml-training-pipeline
+
+- id: Q-09-005
+  objective: S3.04
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A model in production starts failing whenever a customer has a payment method that did not
+    exist in the training data. The model is a Spark PipelineModel that uses StringIndexer. Which
+    change prevents the failure?
+  options:
+    A: Set handleInvalid="keep" on the StringIndexer and retrain
+    B: Replace the StringIndexer with a VectorAssembler
+    C: Increase the number of partitions of the scoring DataFrame
+    D: Drop the payment method column at scoring time
+  answer: [A]
+  explanation: >-
+    With handleInvalid="keep", unseen categories get their own index instead of raising an error at
+    transform time.
+  distractors:
+    B: VectorAssembler cannot encode string categories.
+    C: Partitioning does not change how unseen labels are handled.
+    D: The fitted pipeline expects the column; removing it makes scoring fail differently.
+  chapter_ref: 09-pipelines.md#pitfalls
+
+- id: Q-09-006
+  objective: S3.04
+  pool: review
+  type: single
+  difficulty: hard
+  stem: >-
+    A data scientist imputes missing values with the median of the whole dataset in a notebook cell,
+    then splits the data and trains a scikit-learn model on the imputed training rows. Which
+    statement best describes the problems with this approach?
+  options:
+    A: The test rows influenced the imputation statistic, and the logged model will not impute raw data at serving time
+    B: Medians cannot be computed on numeric data, and scikit-learn cannot train on imputed data
+    C: The model will be too simple, and the training set will be too small
+    D: There is no problem as long as the split is stratified
+  answer: [A]
+  explanation: >-
+    Imputing before the split leaks test information into training, and because imputation is not
+    part of the logged model, serving receives raw data the model never saw: training-serving skew.
+    Putting SimpleImputer inside a Pipeline fixes both.
+  distractors:
+    B: Both statements are false.
+    C: Imputation does not change model complexity or the number of rows.
+    D: Stratification controls the class ratio, not leakage of statistics.
+  chapter_ref: 09-pipelines.md#why-pipelines-matter
+
+- id: Q-09-007
+  objective: S3.04
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO are benefits of putting preprocessing and the model into one pipeline before logging
+    it to MLflow?
+  options:
+    A: The same transformations are applied at training and at inference time
+    B: Cross-validation refits the preprocessing inside every fold, avoiding leakage
+    C: The model no longer needs a signature
+    D: Training becomes distributed automatically
+    E: Hyperparameters no longer need tuning
+  answer: [A, B]
+  explanation: >-
+    Pipelines remove training-serving skew and let tuning and cross-validation fit preprocessing on
+    the training folds only.
+  distractors:
+    C: Logging a signature is still recommended and required for Unity Catalog registration.
+    D: A scikit-learn pipeline still trains on a single node.
+    E: Pipelines make tuning easier, not unnecessary.
+  chapter_ref: 09-pipelines.md#why-pipelines-matter
+
+- id: Q-09-008
+  objective: S3.03
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    In scikit-learn, which method call is a typical way to apply a fitted StandardScaler to new
+    validation data?
+  options:
+    A: scaler.fit_transform(validation)
+    B: scaler.transform(validation)
+    C: scaler.predict(validation)
+    D: scaler.evaluate(validation)
+  answer: [B]
+  explanation: >-
+    A fitted transformer is applied with transform(); it reuses the statistics learned from the
+    training data.
+  distractors:
+    A: fit_transform would relearn the statistics from validation data, which leaks information.
+    C: predict() belongs to predictors such as classifiers, not to transformers.
+    D: Transformers have no evaluate() method.
+  chapter_ref: 09-pipelines.md#estimators-transformers-and-models
+
+- id: Q-09-009
+  objective: S3.04
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A team trains a gradient-boosted model on 2 GB of tabular data and must score a 4 TB Delta table
+    nightly. Which approach is most appropriate?
+  options:
+    A: Train with Spark ML because the scoring data is large
+    B: Train a single-node scikit-learn or XGBoost pipeline and score it at scale with an MLflow Spark UDF
+    C: Collect the 4 TB table to the driver with toPandas() and call predict()
+    D: Retrain the model on every nightly batch before scoring
+  answer: [B]
+  explanation: >-
+    Training data fits on one machine, so single-node training is simplest and fastest;
+    mlflow.pyfunc.spark_udf distributes scoring across the cluster.
+  distractors:
+    A: Training data size, not scoring data size, decides the training library.
+    C: 4 TB will not fit in driver memory.
+    D: Retraining nightly is unrelated to the scoring problem and wastes compute.
+  chapter_ref: 09-pipelines.md#choosing-an-approach

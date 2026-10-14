@@ -1,0 +1,228 @@
+- id: Q-11-001
+  objective: S3.11
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A churn model flags 200 customers as likely to churn. 150 of them actually churn. In total 300
+    customers churned. What are the model's precision and recall?
+  options:
+    A: Precision 0.75, recall 0.50
+    B: Precision 0.50, recall 0.75
+    C: Precision 0.75, recall 0.75
+    D: Precision 0.67, recall 0.50
+  answer: [A]
+  explanation: >-
+    Precision = TP / predicted positives = 150 / 200 = 0.75. Recall = TP / actual positives =
+    150 / 300 = 0.50.
+  distractors:
+    B: Swaps the two definitions.
+    C: Uses the predicted positives as the denominator for both.
+    D: 0.67 is 200 / 300, which is neither metric.
+  chapter_ref: 11-evaluation.md#classification-metrics
+
+- id: Q-11-002
+  objective: S3.11
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO classification metrics are computed from predicted probabilities and therefore do not
+    depend on the chosen decision threshold?
+  options:
+    A: ROC AUC
+    B: Log loss
+    C: F1 score
+    D: Precision
+    E: Accuracy
+  answer: [A, B]
+  explanation: >-
+    ROC AUC summarises ranking quality over all thresholds and log loss scores the probabilities
+    directly; neither needs a threshold.
+  distractors:
+    C: F1 is computed from hard predictions, which depend on the threshold.
+    D: Precision is computed from hard predictions.
+    E: Accuracy is computed from hard predictions.
+  chapter_ref: 11-evaluation.md#classification-metrics
+
+- id: Q-11-003
+  objective: S3.11
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist evaluates a binary Spark ML classifier with
+    MulticlassClassificationEvaluator(metricName="f1") and reports the result as "the F1 score of
+    the fraud class". Why is that statement inaccurate?
+  options:
+    A: The default f1 metric is a weighted average of the F1 scores of both classes
+    B: MulticlassClassificationEvaluator cannot be used for binary labels
+    C: f1 in Spark is computed from probabilities, not predictions
+    D: Spark always reports F1 for label 0 only
+  answer: [A]
+  explanation: >-
+    The default "f1" is the class-frequency-weighted average; for the positive class use
+    metricName="fMeasureByLabel" with metricLabel=1.0.
+  distractors:
+    B: The evaluator works for any number of classes, including two.
+    C: F1 uses the prediction column, not probabilities.
+    D: It averages over all labels unless a specific label metric is requested.
+  chapter_ref: 11-evaluation.md#the-same-metrics-in-spark-ml
+
+- id: Q-11-004
+  objective: S3.12
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    Two house-price models have the same MAE of 20,000 euros. Model A has an RMSE of 25,000 and
+    model B an RMSE of 60,000. What does this tell you?
+  options:
+    A: Model B makes a few very large errors that model A avoids
+    B: Model B is better because its RMSE is higher
+    C: Both models are identical because MAE is the main metric
+    D: Model A must have a negative R-squared
+  answer: [A]
+  explanation: >-
+    RMSE squares errors, so a much larger RMSE at equal MAE means some predictions of model B are
+    far off.
+  distractors:
+    B: Lower RMSE is better.
+    C: Equal MAE does not mean equal error distributions.
+    D: Nothing here implies model A is worse than predicting the mean.
+  chapter_ref: 11-evaluation.md#regression-metrics
+
+- id: Q-11-005
+  objective: S3.12
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A regression model has an R-squared of 0 on the test set. What does this mean?
+  options:
+    A: The model predicts perfectly
+    B: The model explains none of the variance; it is no better than always predicting the mean
+    C: The RMSE is zero
+    D: The model is overfitting
+  answer: [B]
+  explanation: R-squared compares the model's squared error with that of predicting the mean; 0 means no improvement.
+  distractors:
+    A: A perfect model has R-squared 1.
+    C: RMSE zero corresponds to R-squared 1.
+    D: R-squared on one test set alone cannot show overfitting; it needs a comparison with training performance.
+  chapter_ref: 11-evaluation.md#regression-metrics
+
+- id: Q-11-006
+  objective: S3.13
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A hospital wants a model that flags patients who may have a rare but treatable disease. Flagged
+    patients get a cheap follow-up test; a missed case can be fatal. Which metric should drive model
+    selection?
+  options:
+    A: Precision
+    B: Recall
+    C: Accuracy
+    D: R-squared
+  answer: [B]
+  explanation: >-
+    Missing a positive case is the costly error, so the model must find as many real cases as
+    possible: maximise recall.
+  distractors:
+    A: Precision matters when false alarms are expensive, but follow-up tests are cheap here.
+    C: Accuracy is dominated by the many healthy patients.
+    D: R-squared is a regression metric.
+  chapter_ref: 11-evaluation.md#choosing-the-right-metric
+
+- id: Q-11-007
+  objective: S3.13
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A delivery company predicts delivery times. A few deliveries take days because of customs
+    incidents, and management wants the evaluation to reflect typical errors rather than these
+    extreme cases. Which metric fits?
+  options:
+    A: RMSE
+    B: MAE
+    C: Log loss
+    D: ROC AUC
+  answer: [B]
+  explanation: MAE weighs every error linearly, so a few extreme errors do not dominate the score.
+  distractors:
+    A: RMSE squares errors and is dominated by the extreme cases.
+    C: Log loss is a classification metric.
+    D: ROC AUC is a classification metric.
+  chapter_ref: 11-evaluation.md#choosing-the-right-metric
+
+- id: Q-11-008
+  objective: S3.13
+  pool: review
+  type: single
+  difficulty: hard
+  stem: >-
+    An insurer uses a model's predicted claim probability to compute an expected cost per customer
+    and price the policy. Two models have the same ROC AUC. Which metric best tells them apart for
+    this use?
+  options:
+    A: Accuracy at threshold 0.5
+    B: Log loss
+    C: Recall
+    D: MAE of the predicted class labels
+  answer: [B]
+  explanation: >-
+    The probabilities themselves are used, so they must be well calibrated; log loss directly
+    penalises poorly calibrated, overconfident probabilities.
+  distractors:
+    A: Accuracy ignores the probability values.
+    C: Recall depends on one threshold and ignores calibration.
+    D: MAE of class labels is not a standard classification metric.
+  chapter_ref: 11-evaluation.md#choosing-the-right-metric
+
+- id: Q-11-009
+  objective: S3.14
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A model was trained on np.log1p(price). Its RMSE on the test set, computed directly from the
+    model's output and np.log1p(test_price), is 0.28. The team wants to compare it with an earlier
+    model whose RMSE is 41,000 euros. What should they do?
+  options:
+    A: Compare 0.28 with 41,000 directly; the new model is far better
+    B: Apply np.expm1 to the predictions, then compute RMSE against the original prices
+    C: Apply np.log1p to the earlier model's RMSE
+    D: Multiply 0.28 by the average price
+  answer: [B]
+  explanation: >-
+    The predictions are on the log1p scale; back-transform them with expm1 and compute the metric
+    in euros so both models are measured in the same unit.
+  distractors:
+    A: The numbers are in different units and cannot be compared.
+    C: Transforming an aggregated metric does not give a comparable metric.
+    D: This is not a valid conversion of RMSE between scales.
+  chapter_ref: 11-evaluation.md#log-transformed-targets-exponentiate-first
+
+- id: Q-11-010
+  objective: S3.14
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A Spark ML model predicts log(salary). A dashboard shows the prediction column directly, and
+    users see values such as 10.8. What is the fix?
+  options:
+    A: Train the model on salary instead of log(salary)
+    B: Write exp(prediction) to the table that feeds the dashboard
+    C: Round the predictions to whole numbers
+    D: Divide the predictions by the mean salary
+  answer: [B]
+  explanation: Predictions of a log-transformed target must be exponentiated before they are interpreted.
+  distractors:
+    A: Retraining is unnecessary; the log model may be the better model.
+    C: Rounding a log value still leaves it in log units.
+    D: Scaling does not undo a logarithm.
+  chapter_ref: 11-evaluation.md#log-transformed-targets-exponentiate-first

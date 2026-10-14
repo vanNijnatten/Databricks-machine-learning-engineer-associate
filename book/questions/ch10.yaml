@@ -1,0 +1,229 @@
+- id: Q-10-001
+  objective: S3.10
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist tunes a gradient-boosted classifier with GridSearchCV using 4-fold
+    cross-validation. The grid has learning_rate in [0.01, 0.1], max_depth in [3, 5, 7] and
+    n_estimators in [100, 300]. Following the convention used by the certification exam, how many
+    models are trained during the search?
+  options:
+    A: "12"
+    B: "48"
+    C: "49"
+    D: "7"
+  answer: [B]
+  explanation: >-
+    2 × 3 × 2 = 12 combinations, each trained once per fold: 12 × 4 = 48. The exam does not count
+    the optional final refit.
+  distractors:
+    A: Counts combinations but ignores the 4 folds.
+    C: Adds the final refit on all training data, which the exam convention does not count.
+    D: Adds the value counts (2 + 3 + 2) instead of multiplying them, and ignores the folds.
+  chapter_ref: 10-validation-and-tuning.md#counting-models
+
+- id: Q-10-002
+  objective: S3.10
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A Spark ML pipeline is tuned with TrainValidationSplit(trainRatio=0.75) over a ParamGridBuilder
+    grid with 3 values of regParam and 3 values of maxIter. How many models are fitted during the
+    search, excluding any final refit?
+  options:
+    A: "9"
+    B: "27"
+    C: "36"
+    D: "6"
+  answer: [A]
+  explanation: >-
+    TrainValidationSplit evaluates each of the 3 × 3 = 9 parameter maps on a single split, so 9 models
+    are fitted.
+  distractors:
+    B: Would be the count for 3-fold cross-validation.
+    C: Treats trainRatio=0.75 as 4 folds; TrainValidationSplit uses one split.
+    D: Adds the value counts instead of multiplying them.
+  chapter_ref: 10-validation-and-tuning.md#counting-models
+
+- id: Q-10-003
+  objective: S3.08
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Compared with a single train-validation split, which TWO statements about k-fold cross-validation
+    are correct?
+  options:
+    A: It gives a lower-variance estimate of model performance
+    B: It requires roughly k times more training compute per hyperparameter setting
+    C: It removes the need for a separate test set
+    D: It always produces a better final model
+    E: It is the preferred choice for time-ordered data
+  answer: [A, B]
+  explanation: >-
+    Every row is validated once and the k scores are averaged, which stabilises the estimate, at the
+    cost of k fits per setting.
+  distractors:
+    C: Selecting the best setting by its CV score makes that score optimistic; a test set is still needed.
+    D: Cross-validation improves the estimate and the choice, not necessarily the model itself.
+    E: Random folds leak future information in time series; time-ordered splits are needed.
+  chapter_ref: 10-validation-and-tuning.md#cross-validation-vs-a-trainvalidation-split
+
+- id: Q-10-004
+  objective: S3.09
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist wants Spark ML to choose regParam for a pipeline using 5-fold cross-validation
+    and then return a model refitted with the best value. Which object should wrap the pipeline?
+  options:
+    A: CrossValidator with a ParamGridBuilder grid and an evaluator
+    B: TrainValidationSplit with numFolds=5
+    C: VectorAssembler with handleInvalid="keep"
+    D: BinaryClassificationEvaluator with numFolds=5
+  answer: [A]
+  explanation: >-
+    CrossValidator is an estimator that evaluates every parameter map with k folds using the given
+    evaluator and refits the best map on all the data.
+  distractors:
+    B: TrainValidationSplit uses a single split and has no numFolds parameter.
+    C: VectorAssembler builds feature vectors; it does not tune anything.
+    D: An evaluator only computes a metric; it has no folds.
+  chapter_ref: 10-validation-and-tuning.md#cross-validation-in-spark-ml
+
+- id: Q-10-005
+  objective: S3.05
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    An objective function passed to Hyperopt's fmin trains a model and returns
+    {"loss": roc_auc, "status": STATUS_OK}. What will fmin find?
+  options:
+    A: The hyperparameters with the highest ROC AUC
+    B: The hyperparameters with the lowest ROC AUC
+    C: An error, because loss must be negative
+    D: The hyperparameters with ROC AUC closest to 0.5
+  answer: [B]
+  explanation: fmin minimises the loss, so returning a score to maximise finds the worst model; return -roc_auc instead.
+  distractors:
+    A: That would require returning the negative AUC.
+    C: Hyperopt accepts any numeric loss; the problem is the direction, not the sign.
+    D: fmin minimises the value; it does not target 0.5.
+  chapter_ref: 10-validation-and-tuning.md#hyperopt-fmin-on-the-exam
+
+- id: Q-10-006
+  objective: S3.05
+  pool: review
+  type: single
+  difficulty: hard
+  stem: >-
+    After running best = fmin(objective, space, algo=tpe.suggest, max_evals=50) with
+    space = {"penalty": hp.choice("penalty", ["l1", "l2"]), "C": hp.loguniform("C", -5, 2)}, a data
+    scientist sees best == {"C": 0.82, "penalty": 1}. How should they obtain the actual penalty value?
+  options:
+    A: Use the value 1 directly as the penalty parameter
+    B: Call hyperopt.space_eval(space, best)
+    C: Rerun fmin with algo=rand.suggest
+    D: Exponentiate the penalty value
+  answer: [B]
+  explanation: For hp.choice, fmin returns the index of the chosen option; space_eval maps it back to "l2".
+  distractors:
+    A: 1 is an index, not a valid penalty name.
+    C: The search algorithm does not change the return format.
+    D: Exponentiation applies to nothing here; hp.choice values are categorical.
+  chapter_ref: 10-validation-and-tuning.md#hyperopt-fmin-on-the-exam
+
+- id: Q-10-007
+  objective: S3.06
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A team has a budget of 30 training runs to tune 6 hyperparameters of an XGBoost model, and each
+    run is expensive. Which search strategy is most likely to find a good configuration within the
+    budget?
+  options:
+    A: Grid search over 3 values per hyperparameter
+    B: Bayesian search such as TPE
+    C: Exhaustive grid search over 2 values per hyperparameter
+    D: Manually testing the default configuration 30 times
+  answer: [B]
+  explanation: >-
+    Bayesian search uses earlier results to propose promising candidates, so it typically finds good
+    settings in fewer expensive trials.
+  distractors:
+    A: 3^6 = 729 combinations far exceed the budget.
+    C: 2^6 = 64 combinations still exceed the budget and cover each range poorly.
+    D: Repeating one configuration explores nothing.
+  chapter_ref: 10-validation-and-tuning.md#search-strategies-grid-random-and-bayesian
+
+- id: Q-10-008
+  objective: S3.06
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    In Hyperopt, which argument value switches fmin from Bayesian optimisation to random search?
+  options:
+    A: algo=hyperopt.rand.suggest
+    B: trials=SparkTrials()
+    C: max_evals=1
+    D: space=hp.uniform("x", 0, 1)
+  answer: [A]
+  explanation: The algo argument selects the search algorithm; rand.suggest is random search, tpe.suggest is TPE.
+  distractors:
+    B: SparkTrials changes where trials run, not how they are chosen.
+    C: max_evals only limits the number of trials.
+    D: The space defines what can be sampled, not the search strategy.
+  chapter_ref: 10-validation-and-tuning.md#hyperopt-fmin-on-the-exam
+
+- id: Q-10-009
+  objective: S3.07
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist tunes a scikit-learn random forest on a 1 GB pandas DataFrame with Hyperopt on a
+    classic cluster with 8 workers. Tuning runs one trial at a time on the driver. How can they speed
+    it up most directly?
+  options:
+    A: Replace Trials() with SparkTrials(parallelism=8)
+    B: Convert the model to Spark ML and keep Trials()
+    C: Increase max_evals
+    D: Use hp.choice for every hyperparameter
+  answer: [A]
+  explanation: >-
+    SparkTrials runs independent trials of a single-machine model as Spark tasks across the workers,
+    so up to 8 trials run at the same time.
+  distractors:
+    B: Rewriting the model is unnecessary; the bottleneck is sequential trials.
+    C: More evaluations make tuning take longer.
+    D: The type of distribution does not change parallelism.
+  chapter_ref: 10-validation-and-tuning.md#parallelising-single-node-models
+
+- id: Q-10-010
+  objective: S3.07
+  pool: review
+  type: multiple
+  difficulty: hard
+  stem: >-
+    Which TWO statements about parallel hyperparameter tuning on Databricks are correct?
+  options:
+    A: SparkTrials should be used with single-machine libraries such as scikit-learn
+    B: When the objective trains a Spark ML model, use Trials rather than SparkTrials
+    C: Higher SparkTrials parallelism always yields better hyperparameters
+    D: SparkTrials parallelism can be set arbitrarily high, for example 1,000
+    E: Parallel tuning requires converting the training data to a Spark DataFrame
+  answer: [A, B]
+  explanation: >-
+    SparkTrials distributes trials of single-node models; a Spark ML objective already distributes
+    each fit, so Trials avoids oversubscribing the cluster.
+  distractors:
+    C: Higher parallelism finishes sooner, but each Bayesian proposal learns from fewer completed trials.
+    D: Parallelism is capped at 128 and by the cluster's concurrent task capacity.
+    E: SparkTrials works with pandas data inside the objective function.
+  chapter_ref: 10-validation-and-tuning.md#parallelising-single-node-models

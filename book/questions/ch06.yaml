@@ -1,0 +1,203 @@
+- id: Q-06-001
+  objective: S2.01
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A data scientist needs the count, mean, standard deviation, minimum, quartiles and maximum of
+    every numeric column of a large Spark DataFrame, using a single DataFrame method. Which call
+    returns all of these?
+  options:
+    A: df.describe()
+    B: df.summary()
+    C: df.count()
+    D: df.dtypes
+  answer: [B]
+  explanation: >-
+    summary() returns count, mean, stddev, min, 25%, 50%, 75% and max by default.
+  distractors:
+    A: describe() omits the quartiles (25%, 50%, 75%).
+    C: count() returns only the number of rows.
+    D: dtypes lists column names and types, not statistics.
+  chapter_ref: 06-exploring-data.md#summary-and-describe-on-a-spark-dataframe
+
+- id: Q-06-002
+  objective: S2.01
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    In a Databricks notebook, an analyst runs dbutils.data.summarize(df) on a table with a
+    high-cardinality customer_city column and notices that the reported number of distinct cities
+    differs slightly from a COUNT(DISTINCT) query. What explains this, and how can they get exact
+    numbers?
+  options:
+    A: summarize samples 1% of rows; call df.cache() first
+    B: Some statistics are approximate by default; pass precise=True
+    C: summarize ignores string columns; cast the column to integer
+    D: summarize only reads the first 1,000 rows; use display(df) instead
+  answer: [B]
+  explanation: >-
+    By default dbutils.data.summarize computes some statistics approximately (distinct counts of
+    high-cardinality columns can be off by about 5%); precise=True computes them exactly.
+  distractors:
+    A: summarize analyses the whole DataFrame; caching does not change accuracy.
+    C: String columns are summarised; casting city names to integers is impossible.
+    D: summarize is not limited to the first rows.
+  chapter_ref: 06-exploring-data.md#dbutilsdatasummarize-and-the-data-profile
+
+- id: Q-06-003
+  objective: S2.01
+  pool: review
+  type: single
+  difficulty: hard
+  stem: >-
+    A pandas DataFrame with missing values in a float column is converted with
+    spark.createDataFrame(pdf). df.summary() then reports the column's count as equal to the number
+    of rows and its mean as NaN. What is the most likely cause?
+  options:
+    A: The missing values were converted to NaN, which Spark treats as a value rather than null
+    B: summary() cannot compute means on float columns
+    C: The DataFrame has too many partitions
+    D: The column contains negative numbers
+  answer: [A]
+  explanation: >-
+    Missing pandas floats become NaN in Spark. NaN is a valid double, so it is counted and
+    propagates through mean and stddev; convert NaN to null first.
+  distractors:
+    B: summary() computes means for numeric columns.
+    C: Partitioning does not change statistics.
+    D: Negative numbers do not produce a NaN mean.
+  chapter_ref: 06-exploring-data.md#pitfalls
+
+- id: Q-06-004
+  objective: S2.03
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A data scientist wants to see whether the continuous feature transaction_amount is skewed and
+    whether it has extreme values. Which visualisation is most appropriate?
+  options:
+    A: A histogram of transaction_amount
+    B: A pie chart of transaction_amount
+    C: A bar chart of the count of each customer_id
+    D: A line chart of transaction_amount sorted by customer_id
+  answer: [A]
+  explanation: A histogram shows the distribution of one continuous feature, including skew and outliers.
+  distractors:
+    B: Pie charts suit a few categories, not a continuous variable.
+    C: This shows customer frequency, not the amount distribution.
+    D: Ordering by an identifier imposes a meaningless sequence.
+  chapter_ref: 06-exploring-data.md#visualising-features
+
+- id: Q-06-005
+  objective: S2.03
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    In a Databricks notebook, which steps produce a chart of a query result without writing any
+    plotting code?
+  options:
+    A: Run display(df), then use + > Visualization in the results pane
+    B: Run df.show(), then right-click the text output
+    C: Run df.summary() and export it to CSV
+    D: Run dbutils.fs.ls() on the table location
+  answer: [A]
+  explanation: display() renders a results table whose + menu adds visualizations (and data profiles).
+  distractors:
+    B: show() prints plain text without a visualization menu.
+    C: summary() returns statistics, not a chart.
+    D: dbutils.fs.ls lists files.
+  chapter_ref: 06-exploring-data.md#visualising-features
+
+- id: Q-06-006
+  objective: S2.04
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist wants to know whether subscription_plan (Basic, Plus, Premium) and region
+    (North, South, East, West) are associated. Which method is appropriate?
+  options:
+    A: Pearson correlation between the two columns
+    B: A contingency table and a chi-square test of independence
+    C: A scatter plot of the two columns
+    D: RMSE between the two columns
+  answer: [B]
+  explanation: Both features are categorical, so cross-tabulate them and test independence with chi-square.
+  distractors:
+    A: Pearson correlation requires numeric variables.
+    C: Scatter plots compare two continuous variables.
+    D: RMSE is a regression error metric, not an association measure.
+  chapter_ref: 06-exploring-data.md#two-categorical-features-cross-tab-and-chi-square
+
+- id: Q-06-007
+  objective: S2.04
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    The relation between advertising spend and sign-ups is clearly monotonic (more spend, more
+    sign-ups) but strongly curved, and there are a few extreme spend values. Which statistic best
+    summarises the strength of the relation?
+  options:
+    A: Pearson correlation
+    B: Spearman rank correlation
+    C: Chi-square statistic
+    D: Mean of each column
+  answer: [B]
+  explanation: >-
+    Spearman correlation measures monotonic relations on ranks, so it handles curvature and is robust
+    to outliers.
+  distractors:
+    A: Pearson only measures linear relations and is sensitive to outliers.
+    C: Chi-square compares categorical variables.
+    D: Means describe each column separately, not their relation.
+  chapter_ref: 06-exploring-data.md#two-continuous-features-correlation
+
+- id: Q-06-008
+  objective: S2.04
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO are appropriate ways to compare the continuous feature tenure_months across the
+    categories of the label churned (yes/no)?
+  options:
+    A: A box plot of tenure_months per churned value
+    B: The mean and median of tenure_months per churned value using groupBy().agg()
+    C: Pearson correlation between churned and customer_id
+    D: A pie chart of tenure_months
+    E: A chi-square test between tenure_months and customer_id
+  answer: [A, B]
+  explanation: >-
+    For a continuous feature against a categorical one, compare per-group statistics and
+    distributions, for example with grouped aggregates and box plots.
+  distractors:
+    C: customer_id is an identifier, not tenure, and correlation with it is meaningless.
+    D: Pie charts are not suitable for a continuous feature.
+    E: Neither variable pair is relevant, and chi-square needs categorical features.
+  chapter_ref: 06-exploring-data.md#a-categorical-and-a-continuous-feature-statistics-per-group
+
+- id: Q-06-009
+  objective: S2.04
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    Which Spark DataFrame method computes the Pearson correlation between two numeric columns
+    directly, without assembling a vector?
+  options:
+    A: df.stat.corr("col_a", "col_b")
+    B: df.stat.crosstab("col_a", "col_b")
+    C: df.summary("corr")
+    D: df.corr_spearman("col_a", "col_b")
+  answer: [A]
+  explanation: DataFrame.stat.corr returns the Pearson correlation of two numeric columns.
+  distractors:
+    B: crosstab builds a contingency table of two (categorical) columns.
+    C: summary has no correlation statistic.
+    D: There is no such method; Spearman needs pyspark.ml.stat.Correlation.
+  chapter_ref: 06-exploring-data.md#two-continuous-features-correlation

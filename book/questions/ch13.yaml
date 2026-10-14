@@ -1,0 +1,199 @@
+- id: Q-13-001
+  objective: S4.02
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A team wants its real-time endpoint to return not only a churn probability but also a risk band
+    computed from business rules, using the existing scikit-learn model. What should they deploy?
+  options:
+    A: An mlflow.pyfunc.PythonModel that loads the classifier in load_context and applies the rules in predict, registered in Unity Catalog
+    B: The scikit-learn model plus a separate notebook that post-processes every request
+    C: A Lakeflow pipeline that calls the endpoint
+    D: Two endpoints, one per output column
+  answer: [A]
+  explanation: >-
+    A custom pyfunc model packages preprocessing, post-processing and models as one MLflow model that
+    Model Serving deploys behind a single endpoint.
+  distractors:
+    B: Notebooks are not part of the request path of an endpoint.
+    C: Pipelines process tables; they do not add logic to endpoint responses.
+    D: Splitting outputs across endpoints doubles cost and still lacks the rules.
+  chapter_ref: 13-real-time-serving.md#custom-models
+
+- id: Q-13-002
+  objective: S4.02
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A custom PythonModel downloads a 2 GB lookup file inside predict(), and endpoint latency is very
+    high. What should the developer change?
+  options:
+    A: Log the file as a model artifact and load it once in load_context
+    B: Increase the workload size to Large
+    C: Enable scale to zero
+    D: Query the endpoint with dataframe_records instead of dataframe_split
+  answer: [A]
+  explanation: >-
+    load_context runs once when the model starts; artifacts logged with the model are available
+    there, so requests no longer pay the loading cost.
+  distractors:
+    B: More concurrency does not remove the per-request download.
+    C: Scale to zero adds cold starts and does not fix per-request work.
+    D: The input format is not the bottleneck.
+  chapter_ref: 13-real-time-serving.md#custom-models
+
+- id: Q-13-003
+  objective: S4.05
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    Which request body is the recommended format for sending tabular input to a custom model serving
+    endpoint?
+  options:
+    A: '{"dataframe_split": {"columns": ["age", "plan"], "data": [[34, "basic"]]}}'
+    B: '{"rows": [[34, "basic"]]}'
+    C: '{"sql": "SELECT * FROM customers"}'
+    D: '{"model": "prod.ml.churn", "version": 3}'
+  answer: [A]
+  explanation: dataframe_split sends the column names once and the rows as lists; it is the recommended tabular format.
+  distractors:
+    B: rows is not one of the accepted input keys.
+    C: Endpoints receive data, not SQL queries.
+    D: The endpoint already knows which model it serves; the body carries input data.
+  chapter_ref: 13-real-time-serving.md#querying-an-endpoint
+
+- id: Q-13-004
+  objective: S4.05
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO are valid ways to get real-time predictions from a Databricks Model Serving endpoint
+    named churn-endpoint?
+  options:
+    A: POST to /serving-endpoints/churn-endpoint/invocations with a dataframe_split body
+    B: mlflow.deployments.get_deploy_client("databricks").predict(endpoint="churn-endpoint", inputs=payload)
+    C: mlflow.register_model("churn-endpoint", "prod.ml.churn")
+    D: spark.read.table("churn-endpoint")
+    E: dbutils.data.summarize("churn-endpoint")
+  answer: [A, B]
+  explanation: Endpoints are queried over REST or with the MLflow deployments client (and from SQL with ai_query).
+  distractors:
+    C: register_model registers models; it does not query endpoints.
+    D: Endpoints are not tables.
+    E: summarize profiles DataFrames.
+  chapter_ref: 13-real-time-serving.md#querying-an-endpoint
+
+- id: Q-13-005
+  objective: S4.05
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A team deploys a fraud model to an endpoint for card authorisations that must always answer within
+    100 ms, at any time of day. Which setting should they avoid?
+  options:
+    A: Scale to zero
+    B: A served entity from Unity Catalog
+    C: A model signature
+    D: A Small or Medium workload size sized for the load
+  answer: [A]
+  explanation: >-
+    An endpoint that scaled to zero needs a cold start for the next request; Databricks does not
+    recommend it for production endpoints that need guaranteed capacity.
+  distractors:
+    B: Unity Catalog is the recommended registry for served models.
+    C: Signatures improve request validation and are required for Unity Catalog.
+    D: Sizing for the expected load is appropriate.
+  chapter_ref: 13-real-time-serving.md#creating-an-endpoint
+
+- id: Q-13-006
+  objective: S4.06
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A new model version 8 should receive 10% of live requests while version 7 keeps 90%, behind the
+    same endpoint. How is this configured?
+  options:
+    A: Serve both versions as served_entities and set traffic_config.routes to 90 and 10 percent
+    B: Create a second endpoint and ask 10% of clients to call it
+    C: Move the champion alias to version 8 for 10% of the day
+    D: Set workload_size to 10 for version 8
+  answer: [A]
+  explanation: >-
+    One endpoint can serve several versions; traffic_config routes split requests by percentage, which
+    must add up to 100.
+  distractors:
+    B: Splitting clients manually is error-prone and not a traffic split.
+    C: An alias points to one version at a time; it does not split traffic.
+    D: workload_size controls concurrency, not routing.
+  chapter_ref: 13-real-time-serving.md#splitting-traffic-between-models
+
+- id: Q-13-007
+  objective: S4.06
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    An engineer updates an endpoint with routes champion=70 and challenger=40. What happens?
+  options:
+    A: The update is rejected because the traffic percentages must add up to 100
+    B: Requests are scaled proportionally to 70/40
+    C: The challenger receives the remaining 30% only
+    D: Both models receive every request
+  answer: [A]
+  explanation: Traffic routes must sum to exactly 100 percent.
+  distractors:
+    B: Percentages are not normalised automatically.
+    C: The configuration is invalid; nothing is inferred.
+    D: Each request goes to one served model according to the split.
+  chapter_ref: 13-real-time-serving.md#pitfalls
+
+- id: Q-13-008
+  objective: S4.06
+  pool: review
+  type: single
+  difficulty: hard
+  stem: >-
+    During an A/B test with an 80/20 split, a tester needs to send requests only to the challenger
+    served model. How can they do that without changing the split?
+  options:
+    A: POST to /serving-endpoints/<endpoint>/served-models/challenger/invocations
+    B: "Add the header X-Traffic: 100"
+    C: Temporarily set the challenger's route to 100 percent
+    D: It is impossible while a traffic split is configured
+  answer: [A]
+  explanation: >-
+    Querying a specific served model through its served-models path ignores the endpoint's traffic
+    settings.
+  distractors:
+    B: No such header controls routing.
+    C: Changing the split affects all clients.
+    D: Direct served-model invocation exists for this purpose.
+  chapter_ref: 13-real-time-serving.md#splitting-traffic-between-models
+
+- id: Q-13-009
+  objective: S4.02
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    Which Databricks SDK call creates a serving endpoint for version 3 of the Unity Catalog model
+    prod.ml.churn and waits until it is ready?
+  options:
+    A: 'w.serving_endpoints.create_and_wait(name="churn", config=EndpointCoreConfigInput(served_entities=[ServedEntityInput(entity_name="prod.ml.churn", entity_version="3", workload_size="Small", scale_to_zero_enabled=True)]))'
+    B: 'w.jobs.create(name="churn", model="prod.ml.churn")'
+    C: 'mlflow.register_model("prod.ml.churn", "churn-endpoint")'
+    D: 'w.clusters.create(spark_version="18.0.x-cpu-ml-scala2.13")'
+  answer: [A]
+  explanation: >-
+    serving_endpoints.create_and_wait takes an endpoint name and a config listing the served entities.
+  distractors:
+    B: Jobs run workflows; they do not create endpoints.
+    C: register_model registers models.
+    D: Clusters are classic compute; Model Serving is serverless.
+  chapter_ref: 13-real-time-serving.md#creating-an-endpoint

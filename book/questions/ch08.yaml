@@ -1,0 +1,232 @@
+- id: Q-08-001
+  objective: S3.01
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A bank must predict whether a loan applicant will default. Regulators require that every
+    decision can be explained to the applicant in terms of how each input pushed the prediction up
+    or down. Which algorithm family is the best starting point?
+  options:
+    A: Gradient-boosted trees with 2,000 trees
+    B: Logistic regression
+    C: k-means clustering
+    D: A deep neural network
+  answer: [B]
+  explanation: >-
+    Logistic regression is a classification model whose coefficients directly show how each
+    feature moves the log-odds of default, which satisfies the explainability requirement.
+  distractors:
+    A: Large boosted ensembles are accurate but hard to explain decision by decision.
+    C: k-means is unsupervised clustering; it does not predict a labelled outcome.
+    D: Neural networks are the least interpretable option here.
+  chapter_ref: 08-ml-foundations.md#choosing-an-algorithm-for-a-scenario
+
+- id: Q-08-002
+  objective: S3.01
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A marketing team has three years of customer purchase data but no labels. They want to discover
+    groups of customers with similar behaviour to design targeted campaigns. Which approach fits?
+  options:
+    A: Linear regression on total spend
+    B: A random forest classifier
+    C: k-means clustering
+    D: An ALS recommender
+  answer: [C]
+  explanation: Without a label the task is unsupervised; k-means groups similar customers into segments.
+  distractors:
+    A: Regression needs a numeric label to predict and does not create groups.
+    B: A classifier needs labelled classes, which do not exist yet.
+    D: ALS recommends items from user-item interactions; it does not segment customers.
+  chapter_ref: 08-ml-foundations.md#choosing-an-algorithm-for-a-scenario
+
+- id: Q-08-003
+  objective: S3.01
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    A data scientist must predict house prices from 40 tabular features, some with strong
+    non-linear effects and interactions. Accuracy matters most and the data fits comfortably in
+    memory on one node. Which TWO choices are most appropriate?
+  options:
+    A: Gradient-boosted trees such as XGBoost or LightGBM
+    B: A random forest regressor
+    C: Logistic regression
+    D: k-means with k equal to the number of price bands
+    E: A single decision tree with no depth limit
+  answer: [A, B]
+  explanation: >-
+    Tree ensembles capture non-linear effects and interactions without manual feature engineering
+    and are the usual strongest choices for tabular regression.
+  distractors:
+    C: Logistic regression is a classification model, and linear models miss non-linear effects.
+    D: Clustering does not learn to predict a numeric label.
+    E: An unlimited single tree overfits (high variance) and generalises poorly.
+  chapter_ref: 08-ml-foundations.md#choosing-an-algorithm-for-a-scenario
+
+- id: Q-08-004
+  objective: S3.02
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A fraud model is trained on transactions of which 0.5% are fraudulent. The data scientist uses
+    scikit-learn's RandomForestClassifier and wants the model to stop favouring the legitimate class
+    without changing the training data. What should they do?
+  options:
+    A: Set class_weight="balanced" on the classifier
+    B: Standardise all numeric features before training
+    C: Remove the fraudulent transactions that look like outliers
+    D: Report accuracy instead of recall
+  answer: [A]
+  explanation: >-
+    Class weights make errors on the rare class cost more in the training loss (cost-sensitive
+    learning) without duplicating or deleting rows.
+  distractors:
+    B: Scaling does not change the class ratio, and trees do not need scaled features.
+    C: Removing minority rows makes the imbalance worse.
+    D: Accuracy hides poor minority performance; it is a reporting choice, not a mitigation.
+  chapter_ref: 08-ml-foundations.md#cost-sensitive-learning-class-weights
+
+- id: Q-08-005
+  objective: S3.02
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist trains a Spark ML LogisticRegression on a DataFrame in which only 3% of rows
+    have label 1. How can they apply cost-sensitive learning with Spark ML?
+  options:
+    A: Pass class_weight="balanced" to LogisticRegression
+    B: Add a column with a larger weight for label-1 rows and pass its name as weightCol
+    C: Call df.repartition(2, "label") before fitting
+    D: Set the threshold parameter to 0.97 before fitting
+  answer: [B]
+  explanation: >-
+    Spark ML estimators accept per-row weights through weightCol; giving minority rows a larger
+    weight is the Spark equivalent of class weights.
+  distractors:
+    A: class_weight is a scikit-learn argument; Spark ML has no such parameter.
+    C: Repartitioning changes data layout across executors, not the loss function.
+    D: Raising the threshold makes the model predict label 1 even less often.
+  chapter_ref: 08-ml-foundations.md#cost-sensitive-learning-class-weights
+
+- id: Q-08-006
+  objective: S3.02
+  pool: review
+  type: single
+  difficulty: hard
+  stem: >-
+    To fix class imbalance, an engineer randomly oversamples the minority class of the full dataset
+    and then splits it 80/20 into training and validation data. A decision tree reaches F1 0.95 on
+    validation data but performs poorly in production. What is the most likely cause?
+  options:
+    A: Decision trees cannot be used for imbalanced data
+    B: Duplicated minority rows ended up in both splits, so validation rows were memorised during training
+    C: The validation set was too small
+    D: F1 is not defined for imbalanced data
+  answer: [B]
+  explanation: >-
+    Resampling before splitting leaks copies of training rows into validation data, inflating the
+    score. Split first and resample only the training split.
+  distractors:
+    A: Trees work fine on imbalanced data, especially with class weights.
+    C: 20% of the data is a normal validation size; the problem is leakage, not size.
+    D: F1 is a common metric precisely for imbalanced classification.
+  chapter_ref: 08-ml-foundations.md#pitfalls
+
+- id: Q-08-007
+  objective: S3.02
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    A churn dataset has 8% churners. Which TWO actions directly help a classifier detect more
+    churners?
+  options:
+    A: Random undersampling of the non-churners in the training split
+    B: Collecting more examples of customers who did not churn
+    C: Lowering the decision threshold applied to the predicted churn probability
+    D: Evaluating the model with accuracy on the test set
+    E: Converting all categorical features to strings
+  answer: [A, C]
+  explanation: >-
+    Undersampling the majority in the training split balances what the model sees, and a lower
+    threshold labels more customers as churners, raising recall.
+  distractors:
+    B: More majority data increases the imbalance.
+    D: Accuracy rewards ignoring the minority class; it does not improve detection.
+    E: Changing data types has no effect on imbalance.
+  chapter_ref: 08-ml-foundations.md#other-levers
+
+- id: Q-08-008
+  objective: S3.15
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A gradient-boosted model reaches an RMSE of 2.1 on training data and 9.8 on validation data.
+    What best describes the model and a suitable remedy?
+  options:
+    A: Underfitting; add more trees and deeper trees
+    B: Overfitting; increase regularisation or reduce tree depth
+    C: Underfitting; remove features
+    D: The model is well balanced; deploy it
+  answer: [B]
+  explanation: >-
+    A large gap between low training error and high validation error indicates high variance
+    (overfitting); a simpler or more regularised model reduces it.
+  distractors:
+    A: More and deeper trees increase complexity and worsen overfitting.
+    C: Underfitting shows high error on both splits, which is not the case here.
+    D: The validation error is nearly five times the training error.
+  chapter_ref: 08-ml-foundations.md#bias-variance-and-model-complexity
+
+- id: Q-08-009
+  objective: S3.15
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A linear regression predicting delivery time has an R-squared of 0.31 on training data and 0.30
+    on validation data. Which change is most likely to improve it?
+  options:
+    A: Collect three times more training rows of the same features
+    B: Add stronger L2 regularisation
+    C: Use a more flexible model or engineer features that capture non-linear effects
+    D: Reduce the number of features
+  answer: [C]
+  explanation: >-
+    Low and similar scores on both splits indicate high bias (underfitting); the model needs more
+    capacity or better features.
+  distractors:
+    A: More data mainly reduces variance; it does not fix a model that is too simple.
+    B: Regularisation reduces complexity and would increase bias further.
+    D: Fewer features makes the model even simpler.
+  chapter_ref: 08-ml-foundations.md#bias-variance-and-model-complexity
+
+- id: Q-08-010
+  objective: S3.15
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    Which statement about ensembles and the bias-variance trade-off is correct?
+  options:
+    A: Bagging (as in random forests) mainly reduces variance by averaging many trees
+    B: Boosting mainly reduces variance by training trees independently
+    C: Both bagging and boosting increase bias to reduce variance
+    D: Ensembles cannot overfit
+  answer: [A]
+  explanation: >-
+    Averaging many high-variance trees trained on bootstrap samples (bagging) cancels out their
+    individual noise, lowering variance.
+  distractors:
+    B: Boosting trains trees sequentially to correct previous errors, mainly reducing bias.
+    C: Neither technique is designed to increase bias.
+    D: Boosted ensembles in particular overfit without regularisation or early stopping.
+  chapter_ref: 08-ml-foundations.md#bias-variance-and-model-complexity

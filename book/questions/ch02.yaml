@@ -1,0 +1,183 @@
+- id: Q-02-001
+  objective: S1.04
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A business analyst with limited coding experience needs a reasonable classification baseline for
+    a new dataset within an hour, and an ML engineer will later refine it. Which Databricks capability
+    is the best starting point?
+  options:
+    A: AutoML, which trains and tunes many models and produces editable notebooks
+    B: Model Serving with a traffic split
+    C: A Lakeflow pipeline
+    D: Unity Catalog lineage
+  answer: [A]
+  explanation: >-
+    AutoML quickly produces a ranked set of tracked models and the source code of the best trial,
+    which an engineer can then refine.
+  distractors:
+    B: Serving deploys an existing model; it does not train one.
+    C: Pipelines process data; they do not search for models.
+    D: Lineage tracks data and model dependencies.
+  chapter_ref: 02-automl.md#advantages-for-the-model-development-process
+
+- id: Q-02-002
+  objective: S1.04
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO are advantages AutoML brings to the model development process?
+  options:
+    A: It generates editable notebooks with the code of the trials ("glass-box" AutoML)
+    B: It logs every trial to MLflow with parameters, metrics and the model
+    C: It guarantees that the best trial needs no further validation before production
+    D: It removes the need to understand the business problem
+    E: It trains deep-learning models on image data automatically
+  answer: [A, B]
+  explanation: >-
+    AutoML's code is reviewable and reusable, and its trials are fully tracked, which makes results
+    reproducible and comparable.
+  distractors:
+    C: The best trial still needs review, validation and an MLOps process.
+    D: Domain knowledge is still needed, for example to exclude leaky columns.
+    E: AutoML works on tabular data; image data is not supported.
+  chapter_ref: 02-automl.md#advantages-for-the-model-development-process
+
+- id: Q-02-003
+  objective: S1.03
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    An AutoML classification experiment on loan data reports a suspiciously perfect F1 score. The
+    table contains a column default_flag_updated that is only filled after a loan defaults. How should
+    the data scientist rerun AutoML?
+  options:
+    A: Exclude the column with exclude_cols (or untick it in the UI)
+    B: Increase timeout_minutes
+    C: Change primary_metric to accuracy
+    D: Set exclude_frameworks to ["xgboost"]
+  answer: [A]
+  explanation: >-
+    The column leaks the label; removing it from the features is part of feature selection, done
+    with exclude_cols or the UI column selection.
+  distractors:
+    B: More time only finds more models that exploit the leak.
+    C: The metric is not the problem; the leaked feature is.
+    D: Every framework can exploit the leaked column.
+  chapter_ref: 02-automl.md#how-automl-facilitates-model-and-feature-selection
+
+- id: Q-02-004
+  objective: S1.03
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    How does AutoML decide which trial is the best model of a classification experiment?
+  options:
+    A: The trial with the best value of the chosen primary metric on the validation set
+    B: The trial that finished first
+    C: The trial with the most features
+    D: The trial with the best training accuracy
+  answer: [A]
+  explanation: >-
+    AutoML ranks trials by the primary metric (f1 by default) evaluated on the validation split; the
+    test split gives an unbiased estimate afterwards.
+  distractors:
+    B: Training order says nothing about quality.
+    C: More features do not mean a better model.
+    D: Training accuracy rewards overfitting.
+  chapter_ref: 02-automl.md#what-automl-does
+
+- id: Q-02-005
+  objective: S1.03
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist wants to know which features drove the predictions of the best AutoML model.
+    Where do they find this?
+  options:
+    A: In the SHAP feature-importance code of the generated trial notebook, after enabling shap_enabled and re-running it
+    B: In the cluster's Spark UI
+    C: In the Unity Catalog audit log
+    D: AutoML does not provide any way to inspect feature importance
+  answer: [A]
+  explanation: >-
+    Regression and classification trial notebooks include SHAP code; it is disabled by default
+    because it is memory-intensive.
+  distractors:
+    B: The Spark UI shows job execution, not model explanations.
+    C: Audit logs record access, not feature effects.
+    D: SHAP code is included in the notebooks.
+  chapter_ref: 02-automl.md#what-automl-does
+
+- id: Q-02-006
+  objective: S1.03
+  pool: review
+  type: single
+  difficulty: hard
+  stem: >-
+    An AutoML classification experiment runs on a dataset in which 4% of rows are positive. What does
+    AutoML do about the imbalance?
+  options:
+    A: It balances only the training split by downsampling the majority class and adding class weights
+    B: It oversamples the minority class in the training, validation and test splits
+    C: It removes the minority class rows that look like outliers
+    D: Nothing; imbalance must be handled before calling AutoML
+  answer: [A]
+  explanation: >-
+    AutoML downsamples the majority class(es) and adds class weights to the training set only, so
+    validation and test metrics reflect the real distribution.
+  distractors:
+    B: Resampling validation or test data would distort the evaluation.
+    C: AutoML does not drop minority rows.
+    D: AutoML handles imbalance for classification on recent runtimes.
+  chapter_ref: 02-automl.md#what-automl-does
+
+- id: Q-02-007
+  objective: S1.04
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    After an AutoML run, the team wants to reproduce and modify the training code of the
+    third-best trial, whose notebook was not imported into the workspace. What should they do?
+  options:
+    A: Import the notebook from the trial's MLflow artifact with databricks.automl.import_notebook
+    B: Rerun AutoML with a different seed until that trial becomes the best
+    C: Reverse-engineer the model from its predictions
+    D: Nothing; only the best trial's code is ever kept
+  answer: [A]
+  explanation: >-
+    Notebooks of non-best trials are stored as MLflow artifacts and can be imported with
+    import_notebook (or from the UI).
+  distractors:
+    B: Rerunning is wasteful and not guaranteed to reproduce the trial.
+    C: The source code already exists as an artifact.
+    D: Every trial's notebook is saved as an artifact.
+  chapter_ref: 02-automl.md#running-automl
+
+- id: Q-02-008
+  objective: S1.04
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    Which statement about AutoML in Databricks Runtime 18 LTS ML is correct?
+  options:
+    A: AutoML is no longer a built-in library and must be installed, and it runs on dedicated (classic) compute
+    B: AutoML runs only on SQL warehouses
+    C: AutoML replaced MLflow tracking in Runtime 18
+    D: AutoML is available only for image classification
+  answer: [A]
+  explanation: >-
+    From Databricks Runtime 18.0 ML AutoML is not built in; it is provided by a separate package and
+    requires dedicated compute.
+  distractors:
+    B: SQL warehouses run SQL; AutoML runs on ML compute.
+    C: AutoML logs its trials to MLflow.
+    D: AutoML handles tabular classification, regression and forecasting.
+  chapter_ref: 02-automl.md#2-automl

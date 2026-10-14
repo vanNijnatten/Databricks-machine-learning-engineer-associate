@@ -1,0 +1,66 @@
+# The 48 objectives of the Databricks Certified Machine Learning Associate exam guide.
+# Texts are verbatim from the official guide (including its typos, e.g. "realtime interference").
+# kind: practical = something you do with code/UI (needs a tutorial step); conceptual = identify/describe/compare.
+exam_guide:
+  version: 2025-03-01
+  url: https://www.databricks.com/sites/default/files/2025-02/databricks-certified-machine-learning-associate-exam-guide-1-mar-2025.pdf
+  questions: 48
+  minutes: 90
+  checked_on: 2026-10-14
+
+objectives:
+  # Section 1: Databricks Machine Learning
+  - {id: S1.01, section: 1, kind: conceptual, text: "Identify the best practices of an MLOps strategy"}
+  - {id: S1.02, section: 1, kind: conceptual, text: "Identify the advantages of using ML runtimes"}
+  - {id: S1.03, section: 1, kind: conceptual, text: "Identify how AutoML facilitates model/feature selection."}
+  - {id: S1.04, section: 1, kind: conceptual, text: "Identify the advantages AutoML brings to the model development process"}
+  - {id: S1.05, section: 1, kind: conceptual, text: "Identify the benefits of creating feature store tables at the account level in Unity Catalog in Databricks vs at the workspace level"}
+  - {id: S1.06, section: 1, kind: practical, text: "Create a feature store table in Unity Catalog"}
+  - {id: S1.07, section: 1, kind: practical, text: "Write data to a feature store table"}
+  - {id: S1.08, section: 1, kind: practical, text: "Train a model with features from a feature store table."}
+  - {id: S1.09, section: 1, kind: practical, text: "Score a model using features from a feature store table."}
+  - {id: S1.10, section: 1, kind: conceptual, text: "Describe the differences between online and offline feature tables"}
+  - {id: S1.11, section: 1, kind: practical, text: "Identify the best run using the MLflow Client API."}
+  - {id: S1.12, section: 1, kind: practical, text: "Manually log metrics, artifacts, and models in an MLflow Run."}
+  - {id: S1.13, section: 1, kind: conceptual, text: "Identify information available in the MLFlow UI"}
+  - {id: S1.14, section: 1, kind: practical, text: "Register a model using the MLflow Client API in the Unity Catalog registry"}
+  - {id: S1.15, section: 1, kind: conceptual, text: "Identify benefits of registering models in the Unity Catalog registry over the workspace registry"}
+  - {id: S1.16, section: 1, kind: conceptual, text: "Identify scenarios where promoting code is preferred over promoting models and vice versa"}
+  - {id: S1.17, section: 1, kind: practical, text: "Set or remove a tag for a model"}
+  - {id: S1.18, section: 1, kind: practical, text: "Promote a challenger model to a champion model using aliases"}
+
+  # Section 2: Data Processing
+  - {id: S2.01, section: 2, kind: practical, text: "Compute summary statistics on a Spark DataFrame using .summary() or dbutils data summaries"}
+  - {id: S2.02, section: 2, kind: practical, text: "Remove outliers from a Spark DataFrame based on standard deviation or IQR"}
+  - {id: S2.03, section: 2, kind: practical, text: "Create visualizations for categorical or continuous features"}
+  - {id: S2.04, section: 2, kind: practical, text: "Compare two categorical or two continuous features using the appropriate method"}
+  - {id: S2.05, section: 2, kind: conceptual, text: "Compare and contrast imputing missing values with the mean or median or mode value"}
+  - {id: S2.06, section: 2, kind: practical, text: "Impute missing values with the mode, mean, or median value"}
+  - {id: S2.07, section: 2, kind: practical, text: "Use one-hot encoding for categorical features"}
+  - {id: S2.08, section: 2, kind: conceptual, text: "Identify and explain the model types or data sets for which one-hot encoding is or is not appropriate."}
+  - {id: S2.09, section: 2, kind: conceptual, text: "Identify scenarios where log scale transformation is appropriate"}
+
+  # Section 3: Model Development
+  - {id: S3.01, section: 3, kind: conceptual, text: "Use ML foundations to select the appropriate algorithm for a given model scenario"}
+  - {id: S3.02, section: 3, kind: conceptual, text: "Identify methods to mitigate data imbalance in training data"}
+  - {id: S3.03, section: 3, kind: conceptual, text: "Compare estimators and transformers"}
+  - {id: S3.04, section: 3, kind: practical, text: "Develop a training pipeline"}
+  - {id: S3.05, section: 3, kind: practical, text: "Use Hyperopt's fmin operation to tune a model's hyperparameters"}
+  - {id: S3.06, section: 3, kind: practical, text: "Perform random or grid search or Bayesian search as a method for tuning hyperparameters."}
+  - {id: S3.07, section: 3, kind: practical, text: "Parallelize single node models for hyperparameter tuning"}
+  - {id: S3.08, section: 3, kind: conceptual, text: "Describe the benefits and downsides of using cross-validation over a train-validation split."}
+  - {id: S3.09, section: 3, kind: practical, text: "Perform cross-validation as a part of model fitting."}
+  - {id: S3.10, section: 3, kind: conceptual, text: "Identify the number of models being trained in conjunction with a grid-search and cross-validation process."}
+  - {id: S3.11, section: 3, kind: practical, text: "Use common classification metrics: F1, Log Loss, ROC/AUC, etc"}
+  - {id: S3.12, section: 3, kind: practical, text: "Use common regression metrics: RMSE, MAE, R-squared, etc."}
+  - {id: S3.13, section: 3, kind: conceptual, text: "Choose the most appropriate metric for a given scenario objective"}
+  - {id: S3.14, section: 3, kind: conceptual, text: "Identify the need to exponentiate log-transformed variables before calculating evaluation metrics or interpreting predictions"}
+  - {id: S3.15, section: 3, kind: conceptual, text: "Assess the impact of model complexity and the bias variance tradeoff on model performance"}
+
+  # Section 4: Model Deployment
+  - {id: S4.01, section: 4, kind: conceptual, text: "Identify the differences and advantages of model serving approaches: batch, realtime, and streaming"}
+  - {id: S4.02, section: 4, kind: practical, text: "Deploy a custom model to a model endpoint"}
+  - {id: S4.03, section: 4, kind: practical, text: "Use pandas to perform batch inference"}
+  - {id: S4.04, section: 4, kind: conceptual, text: "Identify how streaming inference is performed with Delta Live Tables"}
+  - {id: S4.05, section: 4, kind: practical, text: "Deploy and query a model for realtime inference"}
+  - {id: S4.06, section: 4, kind: practical, text: "Split data between endpoints for realtime interference"}

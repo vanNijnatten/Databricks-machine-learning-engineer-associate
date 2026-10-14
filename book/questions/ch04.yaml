@@ -1,0 +1,196 @@
+- id: Q-04-001
+  objective: S1.11
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist ran 40 training runs in an experiment, each logging the metric val_auc. Which code
+    returns the single run with the highest val_auc?
+  options:
+    A: 'MlflowClient().search_runs([experiment_id], order_by=["metrics.val_auc DESC"], max_results=1)'
+    B: 'MlflowClient().search_runs([experiment_id], order_by=["metrics.val_auc"], max_results=1)'
+    C: 'MlflowClient().get_run(experiment_id)'
+    D: 'mlflow.log_metric("val_auc", max_results=1)'
+  answer: [A]
+  explanation: Sorting the metric descending and keeping one result returns the best-scoring run.
+  distractors:
+    B: The default order is ascending, which returns the lowest AUC.
+    C: get_run takes a run ID and returns that run, not the best one.
+    D: log_metric records a value; it does not search.
+  chapter_ref: 04-mlflow-tracking.md#finding-the-best-run-with-the-client-api
+
+- id: Q-04-002
+  objective: S1.11
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    An analyst wants all runs of an experiment with test_rmse below 12 as a pandas DataFrame to plot
+    them. Which call is the most direct?
+  options:
+    A: 'mlflow.search_runs(experiment_names=["/Shared/prices"], filter_string="metrics.test_rmse < 12")'
+    B: 'mlflow.log_metrics({"test_rmse": 12})'
+    C: 'MlflowClient().list_artifacts(run_id)'
+    D: 'mlflow.set_experiment("/Shared/prices")'
+  answer: [A]
+  explanation: mlflow.search_runs returns matching runs as a pandas DataFrame, and filter_string restricts them.
+  distractors:
+    B: This logs a metric instead of querying runs.
+    C: list_artifacts lists the files of one run.
+    D: set_experiment selects the active experiment but returns no runs.
+  chapter_ref: 04-mlflow-tracking.md#finding-the-best-run-with-the-client-api
+
+- id: Q-04-003
+  objective: S1.12
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Inside a with mlflow.start_run(): block, a data scientist wants to record the regularisation
+    strength used, the validation F1 score and a PNG of the ROC curve. Which TWO calls are needed in
+    addition to logging the F1 with mlflow.log_metric?
+  options:
+    A: mlflow.log_param("C", 0.5)
+    B: mlflow.log_figure(roc_figure, "roc_curve.png")
+    C: mlflow.set_experiment("roc_curve.png")
+    D: mlflow.register_model("roc_curve.png", "prod.ml.roc")
+    E: mlflow.log_metric("C", "0.5")
+  answer: [A, B]
+  explanation: >-
+    Hyperparameters are parameters (log_param), and a matplotlib figure is saved as an artifact with
+    log_figure (or saved to a file and logged with log_artifact).
+  distractors:
+    C: set_experiment selects an experiment; it does not log a file.
+    D: register_model registers models, not images.
+    E: Metrics must be numeric results; a hyperparameter belongs in params.
+  chapter_ref: 04-mlflow-tracking.md#logging-manually
+
+- id: Q-04-004
+  objective: S1.12
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A team trains a neural network for 20 epochs and wants the MLflow UI to show the training loss as
+    a line over the epochs. How should they log it?
+  options:
+    A: Call mlflow.log_metric("train_loss", loss, step=epoch) once per epoch
+    B: Call mlflow.log_param("train_loss", losses) once with the list of losses
+    C: Call mlflow.set_tag("train_loss", loss) once per epoch
+    D: Log only the final loss with mlflow.log_metric
+  answer: [A]
+  explanation: Logging a metric repeatedly with a step builds a metric history that the UI charts.
+  distractors:
+    B: Parameters are single strings, not time series.
+    C: Tags are labels; repeated calls overwrite the value.
+    D: The final value alone cannot be plotted over epochs.
+  chapter_ref: 04-mlflow-tracking.md#logging-manually
+
+- id: Q-04-005
+  objective: S1.12
+  pool: review
+  type: single
+  difficulty: hard
+  stem: >-
+    A model logged with mlflow.sklearn.log_model(model, name="model") cannot be registered in Unity
+    Catalog, and the error mentions a missing signature. What should the data scientist change?
+  options:
+    A: Pass signature=infer_signature(X_train, model.predict(X_train)) (and an input example) to log_model
+    B: Replace name="model" with artifact_path="model"
+    C: Register the model in the workspace registry instead
+    D: Call mlflow.end_run() before logging the model
+  answer: [A]
+  explanation: >-
+    Unity Catalog requires models to have a signature describing inputs and outputs; infer it from
+    sample inputs and predictions.
+  distractors:
+    B: artifact_path is the deprecated name of the same argument and adds no signature.
+    C: The workspace registry is legacy and avoids rather than fixes the problem.
+    D: Ending the run does not add a signature.
+  chapter_ref: 04-mlflow-tracking.md#pitfalls
+
+- id: Q-04-006
+  objective: S1.12
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A data scientist wants scikit-learn training runs to record parameters, training metrics and the
+    fitted model without writing logging calls. What should they do?
+  options:
+    A: Call mlflow.sklearn.autolog() (or mlflow.autolog()) before training
+    B: Call mlflow.log_artifacts() after training
+    C: Use mlflow.search_runs() during training
+    D: Set the tag mlflow.autolog=true on the experiment
+  answer: [A]
+  explanation: Autologging patches supported libraries so fit() logs parameters, metrics and the model automatically.
+  distractors:
+    B: log_artifacts logs files you already created; it does not capture parameters or metrics.
+    C: search_runs queries runs; it logs nothing.
+    D: No such tag enables autologging.
+  chapter_ref: 04-mlflow-tracking.md#autologging
+
+- id: Q-04-007
+  objective: S1.13
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO kinds of information can a data scientist find on an MLflow run page in Databricks?
+  options:
+    A: A link to the notebook revision that produced the run
+    B: The logged artifacts, including the model with code snippets to load it
+    C: The real-time request latency of the model serving endpoint
+    D: The Spark executor logs of every job in the workspace
+    E: The list of users who own the Unity Catalog metastore
+  answer: [A, B]
+  explanation: >-
+    The run page shows parameters, metrics, tags, the source notebook revision and an Artifacts tab
+    with files and logged models.
+  distractors:
+    C: Endpoint latency is shown on the serving endpoint page, not the run page.
+    D: Cluster logs are on the compute page.
+    E: Metastore ownership is managed in Catalog Explorer and the account console.
+  chapter_ref: 04-mlflow-tracking.md#the-mlflow-ui
+
+- id: Q-04-008
+  objective: S1.13
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    Two runs with different max_depth values have similar metrics, and the data scientist wants to see
+    their parameters and metrics side by side in the UI. What should they use?
+  options:
+    A: Select both runs on the experiment page and click Compare
+    B: Open the Catalog Explorer and select the experiment
+    C: Open the cluster's Spark UI
+    D: Export the notebook as HTML
+  answer: [A]
+  explanation: The Compare view shows parameter and metric tables (and charts) for the selected runs side by side.
+  distractors:
+    B: Catalog Explorer shows Unity Catalog assets, not run comparisons.
+    C: The Spark UI shows job execution details.
+    D: An HTML export contains the notebook, not a comparison of runs.
+  chapter_ref: 04-mlflow-tracking.md#the-mlflow-ui
+
+- id: Q-04-009
+  objective: S1.12
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A notebook runs a hyperparameter search that creates 30 runs, and the experiment page becomes hard
+    to read. How can the runs be grouped under one tuning session?
+  options:
+    A: Start a parent run and create each trial with mlflow.start_run(nested=True) inside it
+    B: Log all 30 models into one run with the same name
+    C: Create 30 separate experiments
+    D: Delete all runs except the best one
+  answer: [A]
+  explanation: Nested runs are linked to the parent run and shown grouped under it in the UI.
+  distractors:
+    B: Overwriting artifacts loses the comparison between trials.
+    C: Separate experiments make comparison harder.
+    D: Deleting runs destroys the record of the search.
+  chapter_ref: 04-mlflow-tracking.md#nested-runs

@@ -1,0 +1,205 @@
+- id: Q-01-001
+  objective: S1.02
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A team spends hours on every new cluster installing scikit-learn, XGBoost and MLflow and fixing
+    version conflicts between them. Which change addresses this most directly?
+  options:
+    A: Use Databricks Runtime for Machine Learning, which preinstalls a tested set of ML libraries
+    B: Use a larger driver node
+    C: Store the libraries in a Delta table
+    D: Switch the cluster to a non-LTS standard runtime
+  answer: [A]
+  explanation: >-
+    The ML runtime ships popular ML libraries preinstalled and tested together, removing manual
+    installs and version conflicts.
+  distractors:
+    B: Node size does not install libraries.
+    C: Delta tables store data, not Python packages.
+    D: A standard runtime still lacks the ML libraries, and non-LTS versions are less stable.
+  chapter_ref: 01-databricks-ml-platform.md#databricks-runtime-for-machine-learning
+
+- id: Q-01-002
+  objective: S1.02
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO are advantages of Databricks Runtime for Machine Learning over the standard Databricks
+    Runtime?
+  options:
+    A: GPU-enabled builds of deep-learning libraries when a GPU instance type is selected
+    B: Popular ML libraries such as scikit-learn, XGBoost and PyTorch are preinstalled and tested together
+    C: Models are deployed to production automatically
+    D: Spark is no longer needed
+    E: Unity Catalog permissions are bypassed for faster training
+  answer: [A, B]
+  explanation: The ML runtime adds a curated, compatible ML/DL library stack, including GPU builds.
+  distractors:
+    C: Deployment is a separate step (Model Serving, jobs).
+    D: The ML runtime still includes Spark.
+    E: Governance is never bypassed; the ML runtime uses Dedicated access mode for Unity Catalog data.
+  chapter_ref: 01-databricks-ml-platform.md#databricks-runtime-for-machine-learning
+
+- id: Q-01-003
+  objective: S1.02
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist ticks the "Machine learning" checkbox when creating classic compute that must
+    read Unity Catalog tables. Which access mode does the compute use?
+  options:
+    A: Dedicated (assigned to a single user or group)
+    B: No isolation shared
+    C: Standard with legacy table ACLs
+    D: Serverless
+  answer: [A]
+  explanation: >-
+    Selecting the ML runtime sets the access mode to Dedicated, which is required to use Unity Catalog
+    data with Databricks Runtime ML.
+  distractors:
+    B: No isolation shared does not support Unity Catalog.
+    C: Legacy table ACLs are not the ML runtime's access mode.
+    D: Serverless is a different compute type without runtime selection.
+  chapter_ref: 01-databricks-ml-platform.md#databricks-runtime-for-machine-learning
+
+- id: Q-01-004
+  objective: S1.01
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    A company is designing its MLOps strategy on Databricks. Which TWO practices are recommended?
+  options:
+    A: Separate development, staging and production environments, for example one Unity Catalog catalog each
+    B: Keep pipeline code in Git and run automated tests in CI before promotion
+    C: Give every data scientist write access to production tables to speed up fixes
+    D: Retrain production models manually from a personal notebook
+    E: Store model files on a laptop and upload them to production when ready
+  answer: [A, B]
+  explanation: >-
+    Isolated environments with clear promotion steps and version-controlled, tested code are core
+    MLOps best practices.
+  distractors:
+    C: Production follows least privilege; data scientists typically have read-only access.
+    D: Retraining should be an automated, reviewed pipeline.
+    E: Models belong in a governed registry, not on laptops.
+  chapter_ref: 01-databricks-ml-platform.md#mlops-strategy-best-practices
+
+- id: Q-01-005
+  objective: S1.01
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A nightly batch-scoring job must always use the currently approved production model, and the team
+    does not want to edit the job each time a new model version is promoted. What should the job load?
+  options:
+    A: models:/prod.ml.churn/7, updated by hand after each release
+    B: models:/prod.ml.churn@Champion
+    C: The latest run in the data scientist's experiment
+    D: A pickle file copied to DBFS
+  answer: [B]
+  explanation: >-
+    Aliases decouple deployment from inference; moving the Champion alias to a new version makes the
+    next job run use it without code changes.
+  distractors:
+    A: Version numbers must be edited for every promotion.
+    C: The latest experiment run is not necessarily validated or approved.
+    D: Ungoverned copies bypass the registry, lineage and access control.
+  chapter_ref: 01-databricks-ml-platform.md#mlops-strategy-best-practices
+
+- id: Q-01-006
+  objective: S1.16
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    Security rules prevent the development environment from reading production customer data, and the
+    churn model must be retrained monthly on fresh production data. Which deployment pattern fits?
+  options:
+    A: Deploy models — train once in development and copy the artifact to production
+    B: Deploy code — promote the reviewed training code and train the model in production
+    C: Deploy notebooks by exporting HTML files
+    D: No deployment pattern is needed; serve the development model directly
+  answer: [B]
+  explanation: >-
+    When development cannot access production data and regular retraining is needed, promoting code lets
+    the production environment train on production data with reviewed code.
+  distractors:
+    A: A model trained in development would never see production data.
+    C: HTML exports are not executable deployment artifacts.
+    D: Serving a development model skips validation and governance.
+  chapter_ref: 01-databricks-ml-platform.md#promoting-code-vs-promoting-models
+
+- id: Q-01-007
+  objective: S1.16
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A team fine-tunes a large model on GPUs for four days; reproducing the exact training run is
+    impractical. All work happens in a single workspace and there is no external CI/CD. Which pattern
+    is most appropriate?
+  options:
+    A: Deploy models — promote the trained artifact through staging to production
+    B: Deploy code — retrain the model separately in staging and production
+    C: Retrain the model in every environment every day
+    D: Keep the model only in the development catalog
+  answer: [A]
+  explanation: >-
+    Deploy models suits expensive or hard-to-reproduce training and single-workspace setups: train once
+    and promote the same artifact.
+  distractors:
+    B: Retraining a four-day job per environment is costly and may not reproduce the same model.
+    C: Daily retraining multiplies the cost problem.
+    D: Production use requires promotion and governance.
+  chapter_ref: 01-databricks-ml-platform.md#promoting-code-vs-promoting-models
+
+- id: Q-01-008
+  objective: S1.16
+  pool: review
+  type: single
+  difficulty: hard
+  stem: >-
+    Which statement is a recognised trade-off of the "deploy models" pattern compared with "deploy code"?
+  options:
+    A: Ancillary code such as feature and inference pipelines must still be deployed separately, and automated retraining is harder
+    B: Models can never be registered in Unity Catalog
+    C: It always costs more compute than deploy code
+    D: It requires production data to be copied into the development catalog every day
+  answer: [A]
+  explanation: >-
+    Only the model artifact moves; supporting pipelines still need their own deployment, and retraining
+    in production is not part of the flow.
+  distractors:
+    B: Deploy models typically uses the Unity Catalog registry to promote versions.
+    C: Deploy models trains once and usually costs less training compute.
+    D: Data copying is not inherent to the pattern, although development needs access to suitable data.
+  chapter_ref: 01-databricks-ml-platform.md#promoting-code-vs-promoting-models
+
+- id: Q-01-009
+  objective: S1.02
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist works in serverless notebooks and wants the same Python ML packages that
+    Databricks Runtime ML provides, without managing a cluster. What should they do?
+  options:
+    A: Select the ML base environment in the notebook's Environment side pane
+    B: Install PySpark with %pip to get MLlib
+    C: Attach the notebook to a SQL warehouse
+    D: It is impossible; ML packages require classic compute
+  answer: [A]
+  explanation: >-
+    Serverless notebooks offer an ML base environment with the Python packages of Databricks Runtime ML
+    preinstalled.
+  distractors:
+    B: Databricks warns not to install PySpark on serverless notebooks.
+    C: SQL warehouses run SQL, not Python notebooks with ML libraries.
+    D: The ML base environment exists precisely for this case.
+  chapter_ref: 01-databricks-ml-platform.md#databricks-runtime-for-machine-learning

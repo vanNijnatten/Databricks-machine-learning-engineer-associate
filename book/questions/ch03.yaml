@@ -1,0 +1,231 @@
+- id: Q-03-001
+  objective: S1.05
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    A company with five Databricks workspaces wants data scientists in all of them to reuse the same
+    customer features. Which TWO benefits do feature tables in Unity Catalog offer over workspace-level
+    feature tables?
+  options:
+    A: Features can be discovered and shared across all workspaces attached to the metastore
+    B: Access is governed with Unity Catalog privileges, with lineage from source data to models
+    C: Feature tables no longer need a primary key
+    D: Features are automatically computed without any pipeline code
+    E: Models trained on them no longer need to be logged to MLflow
+  answer: [A, B]
+  explanation: >-
+    Unity Catalog feature tables are governed centrally and visible across workspaces, with lineage
+    tracking; the workspace feature store is deprecated and workspace-local.
+  distractors:
+    C: A primary key is exactly what makes a Delta table a feature table.
+    D: You still own the code or pipeline that computes the features.
+    E: Logging with fe.log_model is how models remember their feature lookups.
+  chapter_ref: 03-feature-engineering-uc.md#feature-tables-in-unity-catalog-vs-the-workspace-feature-store
+
+- id: Q-03-002
+  objective: S1.06
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A data scientist has a Spark DataFrame features_df with one row per store_id and wants it governed
+    as a feature table in Unity Catalog. Which call creates the table?
+  options:
+    A: 'fe.create_table(name="main.retail.store_features", primary_keys=["store_id"], df=features_df)'
+    B: 'features_df.write.format("featurestore").save("store_features")'
+    C: 'spark.sql("CREATE FEATURE TABLE store_features AS SELECT * FROM features_df")'
+    D: 'mlflow.log_table(features_df, "store_features")'
+  answer: [A]
+  explanation: >-
+    FeatureEngineeringClient.create_table registers a Delta table with a primary key in Unity Catalog;
+    passing df infers the schema and writes the data.
+  distractors:
+    B: There is no "featurestore" data source format.
+    C: CREATE FEATURE TABLE is not valid SQL; a PRIMARY KEY constraint is the SQL route.
+    D: log_table logs an MLflow artifact; it does not create a feature table.
+  chapter_ref: 03-feature-engineering-uc.md#creating-a-feature-table
+
+- id: Q-03-003
+  objective: S1.06
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    An existing Unity Catalog Delta table main.retail.store_metrics has a non-null, unique column
+    store_id. How can it be turned into a feature table using SQL only?
+  options:
+    A: ALTER TABLE main.retail.store_metrics ADD CONSTRAINT store_pk PRIMARY KEY (store_id)
+    B: ALTER TABLE main.retail.store_metrics SET AS FEATURE STORE
+    C: CREATE FEATURE STORE main.retail.store_metrics
+    D: OPTIMIZE main.retail.store_metrics ZORDER BY (store_id)
+  answer: [A]
+  explanation: Any Unity Catalog Delta table with a primary key constraint is a feature table.
+  distractors:
+    B: SET AS FEATURE STORE is not a valid clause.
+    C: There is no CREATE FEATURE STORE statement.
+    D: OPTIMIZE ZORDER changes data layout; it adds no primary key.
+  chapter_ref: 03-feature-engineering-uc.md#creating-a-feature-table
+
+- id: Q-03-004
+  objective: S1.07
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A nightly job recomputes features for customers whose data changed and calls
+    fe.write_table(name=table, df=changed_df, mode="merge"). What happens to customers that are in the
+    table but not in changed_df?
+  options:
+    A: Their rows are left unchanged
+    B: Their rows are deleted
+    C: Their feature values are set to null
+    D: The write fails because the keys do not match
+  answer: [A]
+  explanation: >-
+    merge upserts by primary key: new keys are inserted, existing keys in df are updated, and keys
+    absent from df are not touched.
+  distractors:
+    B: merge never deletes rows.
+    C: Values are only changed for keys present in df.
+    D: Partial updates are exactly what merge supports.
+  chapter_ref: 03-feature-engineering-uc.md#writing-data-to-a-feature-table
+
+- id: Q-03-005
+  objective: S1.08
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A labels DataFrame contains customer_id and churned. Which code builds a training DataFrame that
+    joins the features of main.ml.customer_features to these labels?
+  options:
+    A: 'fe.create_training_set(df=labels, feature_lookups=[FeatureLookup(table_name="main.ml.customer_features", lookup_key="customer_id")], label="churned").load_df()'
+    B: 'fe.read_table(name="main.ml.customer_features").join(labels).toPandas()'
+    C: 'fe.score_batch(model_uri="main.ml.customer_features", df=labels)'
+    D: 'FeatureLookup(labels, "churned").load_df()'
+  answer: [A]
+  explanation: >-
+    create_training_set joins the looked-up features to the label DataFrame and records the lookups so
+    that fe.log_model can package them with the model.
+  distractors:
+    B: A manual join works for training but loses the recorded lookups needed for automatic scoring, and an unconditioned join() is a cross join.
+    C: score_batch scores an existing model; it does not build training data.
+    D: FeatureLookup describes a lookup; it has no load_df method.
+  chapter_ref: 03-feature-engineering-uc.md#training-with-features-from-a-feature-table
+
+- id: Q-03-006
+  objective: S1.08
+  pool: review
+  type: single
+  difficulty: hard
+  stem: >-
+    A model trained on a training set from create_training_set is logged with
+    mlflow.sklearn.log_model. Later, fe.score_batch fails because the feature columns are missing from
+    the input DataFrame, which contains only customer_id. What should have been done?
+  options:
+    A: Log the model with fe.log_model(..., training_set=training_set, flavor=mlflow.sklearn)
+    B: Register the model in the workspace registry
+    C: Call score_batch with result_type="string"
+    D: Add customer_id to exclude_columns at scoring time
+  answer: [A]
+  explanation: >-
+    Only fe.log_model stores the feature lookups with the model, which score_batch needs to fetch
+    features from the feature table.
+  distractors:
+    B: The registry choice does not add feature lookup metadata.
+    C: result_type changes the output type, not feature retrieval.
+    D: exclude_columns applies when building training sets, and keys are needed for lookups.
+  chapter_ref: 03-feature-engineering-uc.md#pitfalls
+
+- id: Q-03-007
+  objective: S1.09
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A churn model was logged with fe.log_model and registered as main.ml.churn. A batch job has a
+    DataFrame with only customer_id for today's active customers. How should it score them?
+  options:
+    A: 'fe.score_batch(model_uri="models:/main.ml.churn@champion", df=active_customers)'
+    B: Join all features manually and call mlflow.pyfunc.load_model(...).predict(...)
+    C: Publish the model to an online store
+    D: Call fe.create_training_set with the active customers
+  answer: [A]
+  explanation: >-
+    score_batch looks up the model's features by key, adds them to the DataFrame and returns
+    predictions, using the same logic as at training time.
+  distractors:
+    B: Manual joins duplicate feature logic and risk training/serving skew.
+    C: Online stores hold features, not models, and target real-time serving.
+    D: Training sets need labels and are for training, not scoring.
+  chapter_ref: 03-feature-engineering-uc.md#scoring-with-features-from-a-feature-table
+
+- id: Q-03-008
+  objective: S1.10
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A fraud model served on a real-time endpoint must fetch a card's latest spending features within a
+    few milliseconds per request. Where should these features be read from?
+  options:
+    A: An online feature table published from the offline feature table to a Databricks Online Feature Store
+    B: The offline Delta feature table, queried with Spark for every request
+    C: An MLflow artifact containing a CSV of features
+    D: The training set DataFrame cached on the driver
+  answer: [A]
+  explanation: >-
+    Online stores serve low-latency key lookups for real-time inference; the offline table remains the
+    source of truth and is published to the online store.
+  distractors:
+    B: Spark queries on Delta tables take seconds, too slow per request.
+    C: Artifacts are static files, not a serving store.
+    D: A cached training DataFrame is stale and not reachable from an endpoint.
+  chapter_ref: 03-feature-engineering-uc.md#offline-vs-online-feature-tables
+
+- id: Q-03-009
+  objective: S1.10
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO statements describe offline feature tables correctly?
+  options:
+    A: They are Delta tables in Unity Catalog used for training and batch scoring
+    B: They are the source from which online feature tables are published
+    C: They provide millisecond lookups for real-time endpoints
+    D: They are deleted automatically after a model is trained
+    E: They cannot store more than one row per key
+  answer: [A, B]
+  explanation: >-
+    Offline tables hold the full feature data for training and batch inference and feed the online
+    store through publishing.
+  distractors:
+    C: Millisecond lookups are the role of online stores.
+    D: Feature tables persist and are reused by many models.
+    E: Time-series feature tables store many rows per key, one per timestamp.
+  chapter_ref: 03-feature-engineering-uc.md#offline-vs-online-feature-tables
+
+- id: Q-03-010
+  objective: S1.06
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A notebook imports FeatureStoreClient from databricks.feature_store to create a new feature table
+    in a Unity Catalog workspace created in 2026. What should the data scientist use instead?
+  options:
+    A: FeatureEngineeringClient from databricks.feature_engineering
+    B: mlflow.FeatureClient
+    C: The same FeatureStoreClient with register_table
+    D: databricks.sdk.WorkspaceClient().tables.create
+  answer: [A]
+  explanation: >-
+    FeatureStoreClient belongs to the deprecated workspace feature store; Unity Catalog feature tables
+    use FeatureEngineeringClient.
+  distractors:
+    B: MLflow has no FeatureClient.
+    C: register_table is the legacy workspace feature store API.
+    D: The SDK can create tables but does not provide feature lookups and training sets.
+  chapter_ref: 03-feature-engineering-uc.md#pitfalls

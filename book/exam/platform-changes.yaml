@@ -1,0 +1,70 @@
+# Where the exam guide (2025-03-01) and the current platform (docs snapshot 2026-10-14) differ.
+# Rendered into book/appendix-a-exam-vs-platform.md by `db-ml-associate book render-appendix-a`.
+
+- exam_term: Hyperopt fmin / SparkTrials
+  current_term: Optuna (single node, parallel with joblib) or Ray Tune (distributed)
+  change: deprecated
+  exam_expects: >-
+    Hyperopt is still on the exam: fmin(fn, space, algo=tpe.suggest, max_evals, trials) minimises the
+    objective; SparkTrials parallelises single-node models (needs classic compute). It is not preinstalled
+    after 16.4 LTS ML (%pip install hyperopt).
+  objectives: [S3.05, S3.06, S3.07]
+  references: [hyperparameter-tuning, dbr-18-lts-ml]
+
+- exam_term: Delta Live Tables (DLT)
+  current_term: Lakeflow pipelines (Spark Declarative Pipelines, formerly Delta Live Tables)
+  change: renamed
+  exam_expects: >-
+    Answers say "Delta Live Tables pipeline". Streaming inference = a pipeline that applies the model as a
+    Spark UDF (mlflow.pyfunc.spark_udf) to a streaming table; the pipeline autoscales.
+  objectives: [S4.04]
+  references: [lakeflow-pipelines, lakeflow-transform, lakeflow-python-ref]
+
+- exam_term: Online tables / online feature tables
+  current_term: Databricks Online Feature Stores (Lakebase) with publish_table
+  change: replaced
+  exam_expects: >-
+    Offline feature tables (Delta in Unity Catalog) serve training and batch scoring; online tables serve
+    low-latency lookups for real-time model serving.
+  objectives: [S1.10]
+  references: [online-feature-store]
+
+- exam_term: Workspace model registry and stages (Staging/Production)
+  current_term: Unity Catalog model registry with aliases (e.g. @champion) and tags
+  change: replaced
+  exam_expects: >-
+    Register in Unity Catalog with a three-level name; promote with aliases
+    (set_registered_model_alias); stages do not exist in Unity Catalog.
+  objectives: [S1.14, S1.15, S1.18]
+  references: [model-lifecycle-uc]
+
+- exam_term: FeatureStoreClient (databricks.feature_store)
+  current_term: FeatureEngineeringClient (databricks.feature_engineering)
+  change: replaced
+  exam_expects: Use FeatureEngineeringClient().create_table / write_table / create_training_set / score_batch.
+  objectives: [S1.06, S1.07, S1.08, S1.09]
+  references: [feature-tables-uc, train-with-feature-store]
+
+- exam_term: AutoML built into Databricks Runtime ML
+  current_term: AutoML via the databricks-automl-runtime package on dedicated (classic) compute
+  change: repackaged
+  exam_expects: >-
+    AutoML creates a baseline quickly, generates editable (glass-box) notebooks per trial plus a data
+    exploration notebook, and logs every trial to MLflow.
+  objectives: [S1.03, S1.04]
+  references: [automl, dbr-18-0-ml]
+
+- exam_term: MLflow 2 log_model(artifact_path=...)
+  current_term: MLflow 3 log_model(name=...) and the LoggedModel entity
+  change: renamed
+  exam_expects: >-
+    Concepts are unchanged: runs log params, metrics, artifacts and models; the Client API finds the best run.
+  objectives: [S1.11, S1.12]
+  references: [mlflow-tracking]
+
+- exam_term: MLlib CrossValidator automatic MLflow tracking
+  current_term: mlflow.pyspark.ml.autolog()
+  change: deprecated
+  exam_expects: CrossValidator and TrainValidationSplit still define CV for Spark ML models.
+  objectives: [S3.09]
+  references: [hyperparameter-tuning]

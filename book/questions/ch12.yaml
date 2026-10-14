@@ -1,0 +1,200 @@
+- id: Q-12-001
+  objective: S4.01
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A marketing team receives a list of customers likely to churn every Monday morning, computed from
+    a 50-million-row customer table. Which serving approach is most appropriate?
+  options:
+    A: Batch inference in a scheduled job
+    B: A real-time Model Serving endpoint called for each customer
+    C: A continuous streaming pipeline
+    D: Manual scoring in a notebook by a data scientist each week
+  answer: [A]
+  explanation: >-
+    Weekly consumption with no latency requirement is a batch use case: cheapest and highest
+    throughput.
+  distractors:
+    B: An always-on endpoint costs more and adds a call per customer for no benefit.
+    C: Continuous streaming is unnecessary for a weekly list.
+    D: Manual scoring is not reproducible or automated.
+  chapter_ref: 12-batch-and-streaming-inference.md#choosing-a-serving-approach
+
+- id: Q-12-002
+  objective: S4.01
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO statements correctly compare inference approaches?
+  options:
+    A: Real-time serving offers the lowest latency per prediction but the highest cost per prediction
+    B: Batch inference typically has the highest throughput and lowest cost
+    C: Streaming inference requires a Model Serving endpoint
+    D: Batch inference always produces fresher predictions than streaming
+    E: Real-time serving is the right choice whenever predictions are written to a table
+  answer: [A, B]
+  explanation: >-
+    Real-time endpoints trade cost for millisecond latency; batch jobs process large volumes cheaply
+    on a schedule.
+  distractors:
+    C: Streaming inference usually applies the model as a UDF inside the stream, without an endpoint.
+    D: Batch predictions are only as fresh as the last run; streaming is fresher.
+    E: Writing predictions to a table is typical of batch or streaming.
+  chapter_ref: 12-batch-and-streaming-inference.md#choosing-a-serving-approach
+
+- id: Q-12-003
+  objective: S4.03
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A data scientist has a pandas DataFrame new_customers and a registered model
+    prod.ml.churn with the alias champion. Which code performs batch inference?
+  options:
+    A: mlflow.pyfunc.load_model("models:/prod.ml.churn@champion").predict(new_customers)
+    B: mlflow.register_model("models:/prod.ml.churn@champion", new_customers)
+    C: mlflow.log_model(new_customers, "prod.ml.churn")
+    D: MlflowClient().get_model_version_by_alias("prod.ml.churn", "champion").predict(new_customers)
+  answer: [A]
+  explanation: Load the model once with mlflow.pyfunc using the alias URI and call predict on the DataFrame.
+  distractors:
+    B: register_model registers a model; it does not score data.
+    C: log_model logs a model, not data.
+    D: A ModelVersion entity holds metadata and has no predict method.
+  chapter_ref: 12-batch-and-streaming-inference.md#batch-inference-with-pandas
+
+- id: Q-12-004
+  objective: S4.03
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A scikit-learn model must score a 2-billion-row Delta table nightly. Collecting the table to
+    pandas fails with out-of-memory errors. What should the data scientist do?
+  options:
+    A: Wrap the model with mlflow.pyfunc.spark_udf and apply it to the Spark DataFrame
+    B: Use a larger driver and call toPandas() anyway
+    C: Retrain the model with Spark ML before every scoring run
+    D: Score the rows one at a time in a Python loop
+  answer: [A]
+  explanation: A Spark UDF distributes scoring of the single-node model across the cluster's executors.
+  distractors:
+    B: Two billion rows will not fit on one driver.
+    C: Retraining is unnecessary; the scoring step is the problem.
+    D: A row loop on the driver is extremely slow and still needs the data on the driver.
+  chapter_ref: 12-batch-and-streaming-inference.md#batch-inference-at-scale-with-a-spark-udf
+
+- id: Q-12-005
+  objective: S4.03
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A batch job calls model.predict(df) and fails with a schema enforcement error mentioning a missing
+    column "tenure_months". The DataFrame has a column called "tenure". What is the fix?
+  options:
+    A: Rename the column to tenure_months so it matches the model signature
+    B: Re-register the model without a version number
+    C: Convert the DataFrame to a Spark DataFrame
+    D: Drop all other columns from the DataFrame
+  answer: [A]
+  explanation: >-
+    MLflow checks inputs against the signature; columns must have the names (and compatible types) the
+    model was trained with.
+  distractors:
+    B: Registration does not change input validation.
+    C: The same signature is enforced for Spark input.
+    D: Extra columns are ignored; the missing one is the problem.
+  chapter_ref: 12-batch-and-streaming-inference.md#pitfalls
+
+- id: Q-12-006
+  objective: S4.04
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    An IoT company must score sensor events with an anomaly model within a minute of arrival. Event
+    volume varies strongly during the day and the compute should resize automatically. Which design
+    fits best?
+  options:
+    A: A Delta Live Tables (Lakeflow) pipeline with a streaming table that applies the model as a Spark UDF
+    B: A Model Serving endpoint called from a Python loop over all events every hour
+    C: A nightly batch job with a Spark UDF
+    D: A Structured Streaming job that calls a serving endpoint for every event
+  answer: [A]
+  explanation: >-
+    A declarative pipeline processes new events incrementally, applies the model in-process as a UDF
+    and autoscales its compute with the load.
+  distractors:
+    B: An hourly loop misses the one-minute requirement and does not scale.
+    C: Nightly batches are far too slow.
+    D: Per-event endpoint calls add latency and make the endpoint a bottleneck, and the job lacks pipeline autoscaling.
+  chapter_ref: 12-batch-and-streaming-inference.md#streaming-inference-with-lakeflow-pipelines
+
+- id: Q-12-007
+  objective: S4.04
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    In a Lakeflow (Delta Live Tables) pipeline written in Python, how is a streaming table that scores
+    new records defined?
+  options:
+    A: A function decorated with @dp.table (or @dlt.table) that reads with spark.readStream and adds a column computed by an MLflow Spark UDF
+    B: A function that calls df.write.saveAsTable inside the pipeline
+    C: A SQL warehouse query scheduled every second
+    D: A notebook cell that loops over rows and calls model.predict
+  answer: [A]
+  explanation: >-
+    Pipeline datasets are functions returning DataFrames; a streaming read produces a streaming table,
+    and the model is applied with mlflow.pyfunc.spark_udf.
+  distractors:
+    B: Dataset functions must not write tables; the pipeline does the writing.
+    C: Scheduled warehouse queries are not streaming pipelines.
+    D: Row loops do not scale and are not pipeline definitions.
+  chapter_ref: 12-batch-and-streaming-inference.md#streaming-inference-with-lakeflow-pipelines
+
+- id: Q-12-008
+  objective: S4.03
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A SQL analyst wants to add churn predictions from an existing custom-model serving endpoint
+    called churn-endpoint to a query result, without writing Python. Which function can they use?
+  options:
+    A: ai_query('churn-endpoint', named_struct(...))
+    B: predict_sql('churn-endpoint')
+    C: mlflow.pyfunc.spark_udf in a SQL cell
+    D: CALL MODEL churn-endpoint
+  answer: [A]
+  explanation: ai_query calls a Model Serving endpoint from SQL; the struct fields must match the model's inputs.
+  distractors:
+    B: predict_sql does not exist.
+    C: spark_udf is a Python API.
+    D: CALL MODEL is not Databricks SQL syntax.
+  chapter_ref: 12-batch-and-streaming-inference.md#ai_query-from-sql
+
+- id: Q-12-009
+  objective: S4.04
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    What is the current name of the Databricks product that the exam guide calls Delta Live Tables?
+  options:
+    A: Lakeflow pipelines (Spark Declarative Pipelines)
+    B: Mosaic AI Model Serving
+    C: Unity Catalog volumes
+    D: MLflow Projects
+  answer: [A]
+  explanation: >-
+    Delta Live Tables was renamed Lakeflow pipelines, built on Spark Declarative Pipelines; the Python
+    module is pyspark.pipelines.
+  distractors:
+    B: Model Serving serves models over REST.
+    C: Volumes store files in Unity Catalog.
+    D: MLflow Projects package code for reproducible runs.
+  chapter_ref: 12-batch-and-streaming-inference.md#streaming-inference-with-lakeflow-pipelines

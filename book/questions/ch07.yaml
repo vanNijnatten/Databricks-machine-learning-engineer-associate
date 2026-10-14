@@ -1,0 +1,230 @@
+- id: Q-07-001
+  objective: S2.02
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A column of order values is strongly right-skewed and contains a few extreme errors. The data
+    scientist wants an outlier rule that is not itself distorted by those extreme values. Which rule
+    should they use on the Spark DataFrame?
+  options:
+    A: Remove values more than 3 standard deviations from the mean
+    B: Remove values outside Q1 - 1.5 x IQR and Q3 + 1.5 x IQR, computed with approxQuantile
+    C: Remove the top and bottom 50% of values
+    D: Remove all values above the mean
+  answer: [B]
+  explanation: >-
+    Quartiles barely move when extreme values are added, so IQR fences are robust and make no
+    assumption about a symmetric distribution.
+  distractors:
+    A: The mean and standard deviation are inflated by the outliers and assume roughly normal data.
+    C: That removes all data except the median.
+    D: Half of all legitimate values lie above the mean in symmetric data.
+  chapter_ref: 07-cleaning-and-transforming.md#iqr-tukeys-fences-filter
+
+- id: Q-07-002
+  objective: S2.02
+  pool: review
+  type: single
+  difficulty: hard
+  stem: >-
+    An engineer removes outliers with
+    df.filter(F.col("amount").between(lower, upper)). Afterwards the DataFrame has 8% fewer rows than
+    expected, although only 0.5% of amounts were outside the bounds. What is the most likely cause?
+  options:
+    A: between() excludes the boundary values
+    B: Rows where amount is null were dropped, because comparisons with null are never true
+    C: The filter ran on a cached DataFrame
+    D: approxQuantile always returns the minimum and maximum
+  answer: [B]
+  explanation: >-
+    A filter keeps only rows where the condition is true; for null amounts it is null, so those rows
+    disappear. Keep them explicitly with F.col("amount").isNull() | ... if they will be imputed.
+  distractors:
+    A: between() is inclusive of both bounds.
+    C: Caching does not change filter results.
+    D: approxQuantile returns the requested quantiles.
+  chapter_ref: 07-cleaning-and-transforming.md#removing-outliers
+
+- id: Q-07-003
+  objective: S2.05
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    The annual_income column of a customer table is heavily right-skewed: the median is 48,000 and
+    the mean is 81,000 because of a few very high earners. 6% of values are missing. Which imputation
+    is most appropriate?
+  options:
+    A: Mean, because it uses all values
+    B: Median, because it is not pulled up by the long tail
+    C: Mode, because income is continuous
+    D: Zero, because missing income means no income
+  answer: [B]
+  explanation: >-
+    For skewed data the median represents a typical value; the mean is dragged towards the extreme
+    incomes.
+  distractors:
+    A: Using all values is exactly why the mean is distorted by the tail.
+    C: The mode is for categorical or discrete data; continuous incomes rarely repeat.
+    D: Missing does not mean zero, and zero would distort the distribution.
+  chapter_ref: 07-cleaning-and-transforming.md#imputing-missing-values
+
+- id: Q-07-004
+  objective: S2.05
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO statements about mean, median and mode imputation are correct?
+  options:
+    A: Mode imputation is the usual choice for categorical features
+    B: Median imputation is more robust to outliers than mean imputation
+    C: Mean imputation never changes the variance of a feature
+    D: scikit-learn's SimpleImputer automatically picks the best strategy per column
+    E: Median imputation can only be used on categorical data
+  answer: [A, B]
+  explanation: >-
+    Categories have no mean or median, so the most frequent value is used; the median ignores extreme
+    values while the mean does not.
+  distractors:
+    C: Filling many rows with one value shrinks the variance.
+    D: SimpleImputer uses the strategy you specify (default "mean").
+    E: The median requires ordered numeric values.
+  chapter_ref: 07-cleaning-and-transforming.md#imputing-missing-values
+
+- id: Q-07-005
+  objective: S2.06
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist wants to fill missing values in the numeric columns age and balance of a Spark
+    DataFrame with each column's median, using a reusable step that can be part of a Spark ML
+    pipeline. What should they use?
+  options:
+    A: Imputer(strategy="median", inputCols=["age", "balance"], outputCols=["age", "balance"])
+    B: df.fillna("median")
+    C: StringIndexer(inputCols=["age", "balance"])
+    D: df.dropna(subset=["age", "balance"])
+  answer: [A]
+  explanation: >-
+    Spark ML's Imputer is an estimator that learns per-column medians during fit() and fills them in
+    transform(), so it fits into a Pipeline.
+  distractors:
+    B: fillna fills a literal value; "median" would be inserted as text, not computed.
+    C: StringIndexer encodes categories; it does not impute.
+    D: dropna removes rows instead of imputing.
+  chapter_ref: 07-cleaning-and-transforming.md#in-spark
+
+- id: Q-07-006
+  objective: S2.07
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A Spark ML pipeline must turn the string column payment_method into a format a
+    LogisticRegression can use. Which sequence of stages is correct?
+  options:
+    A: OneHotEncoder, then StringIndexer, then VectorAssembler
+    B: StringIndexer, then OneHotEncoder, then VectorAssembler
+    C: VectorAssembler only
+    D: StandardScaler, then StringIndexer
+  answer: [B]
+  explanation: >-
+    StringIndexer maps strings to indices, OneHotEncoder turns indices into vectors, and
+    VectorAssembler combines all features into the features column.
+  distractors:
+    A: OneHotEncoder needs numeric indices, so it must come after StringIndexer.
+    C: VectorAssembler cannot take string columns.
+    D: StandardScaler expects a numeric vector, and no encoding into a vector happens.
+  chapter_ref: 07-cleaning-and-transforming.md#one-hot-encoding
+
+- id: Q-07-007
+  objective: S2.08
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A model predicts delivery delays and includes the feature postal_code with 12,000 distinct values.
+    The team plans to one-hot encode it for a gradient-boosted tree model. What is the best advice?
+  options:
+    A: One-hot encoding is required for all tree models
+    B: Avoid one-hot encoding here; use an index, target or frequency encoding, or group rare codes
+    C: One-hot encode and then remove the tree model's depth limit
+    D: Convert postal_code to a float and use it as a continuous feature without further thought
+  answer: [B]
+  explanation: >-
+    One-hot encoding a high-cardinality feature creates thousands of sparse columns; trees can split
+    on compact encodings instead.
+  distractors:
+    A: Trees do not need one-hot encoding and often work better without it.
+    C: Unlimited depth increases overfitting and does not fix the width problem.
+    D: Treating codes as numbers implies an order and distance that postal codes do not have.
+  chapter_ref: 07-cleaning-and-transforming.md#when-is-one-hot-encoding-inappropriate
+
+- id: Q-07-008
+  objective: S2.08
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    For which model and feature is one-hot encoding most clearly appropriate?
+  options:
+    A: A logistic regression with the nominal feature contract_type (3 categories)
+    B: A random forest with the feature customer_id (2 million values)
+    C: A linear regression with the ordinal feature education_level, which must keep its order
+    D: Any model with a continuous feature such as temperature
+  answer: [A]
+  explanation: >-
+    Linear models need numeric inputs without an artificial order; a few nominal categories become a
+    few binary columns.
+  distractors:
+    B: An identifier with millions of values should not be one-hot encoded and is usually not a feature at all.
+    C: One-hot encoding discards the order; an ordered integer mapping keeps it.
+    D: Continuous features are not encoded.
+  chapter_ref: 07-cleaning-and-transforming.md#when-is-one-hot-encoding-inappropriate
+
+- id: Q-07-009
+  objective: S2.09
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    In which TWO scenarios is a log transformation most appropriate?
+  options:
+    A: A target variable of household income with a long right tail
+    B: Website session counts ranging from 1 to 2 million, where effects are multiplicative
+    C: A symmetric, normally distributed temperature feature
+    D: A categorical feature with three values
+    E: A feature containing many negative values
+  answer: [A, B]
+  explanation: >-
+    Log transforms compress long right tails and turn multiplicative relations into additive ones for
+    positive values spanning orders of magnitude.
+  distractors:
+    C: Symmetric data does not need to be compressed.
+    D: Logarithms do not apply to categories.
+    E: The logarithm is undefined for negative values.
+  chapter_ref: 07-cleaning-and-transforming.md#log-transformation
+
+- id: Q-07-010
+  objective: S2.09
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A feature number_of_returns has many zeros and a long right tail. Applying np.log produces -inf
+    values. What should the data scientist do?
+  options:
+    A: Use np.log1p, which computes log(1 + x) and is defined at 0
+    B: Drop all rows with zero returns
+    C: Replace -inf with the column's maximum
+    D: Use np.exp instead
+  answer: [A]
+  explanation: log1p handles zeros and still compresses the tail; invert it with expm1.
+  distractors:
+    B: Zeros are valid and frequent; dropping them biases the data.
+    C: Replacing -inf with the maximum turns the smallest values into the largest.
+    D: exp stretches the tail further instead of compressing it.
+  chapter_ref: 07-cleaning-and-transforming.md#log-transformation

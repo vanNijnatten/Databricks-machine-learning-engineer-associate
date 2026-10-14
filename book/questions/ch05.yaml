@@ -1,0 +1,203 @@
+- id: Q-05-001
+  objective: S1.14
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    A data scientist found the best run with run_id best_id; its model was logged with name="model".
+    Which call registers it as a new version of a Unity Catalog model?
+  options:
+    A: mlflow.register_model(f"runs:/{best_id}/model", "prod.churn.churn_model")
+    B: mlflow.register_model(f"runs:/{best_id}/model", "churn_model")
+    C: mlflow.log_param("registered", True)
+    D: MlflowClient().transition_model_version_stage("churn_model", 1, "Production")
+  answer: [A]
+  explanation: >-
+    register_model takes the logged model's URI and a three-level Unity Catalog name and creates a
+    new model version.
+  distractors:
+    B: A one-level name is not a Unity Catalog model name.
+    C: Logging a parameter registers nothing.
+    D: Stages belong to the legacy workspace registry.
+  chapter_ref: 05-model-lifecycle-uc.md#registering-a-model-in-unity-catalog
+
+- id: Q-05-002
+  objective: S1.14
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    Registering a scikit-learn model in Unity Catalog fails with an error about a missing signature.
+    What is the most direct fix?
+  options:
+    A: Re-log the model with signature=infer_signature(X_sample, model.predict(X_sample)) or an input_example, then register it
+    B: Register it under a two-level name
+    C: Grant the user EXECUTE on the catalog
+    D: Register the model in the workspace registry with a stage
+  answer: [A]
+  explanation: New model versions in Unity Catalog must have a signature; logging one fixes the error.
+  distractors:
+    B: Two-level names are not valid in Unity Catalog and do not add a signature.
+    C: Permissions are not the cause of a signature error.
+    D: The legacy registry avoids, rather than fixes, the problem and loses UC governance.
+  chapter_ref: 05-model-lifecycle-uc.md#registering-a-model-in-unity-catalog
+
+- id: Q-05-003
+  objective: S1.15
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO are benefits of registering models in Unity Catalog instead of the workspace model
+    registry?
+  options:
+    A: Models are discoverable and usable across all workspaces attached to the same metastore
+    B: Centralised access control, auditing and lineage
+    C: Support for the Staging and Production stages
+    D: Models no longer need versions
+    E: Models are automatically deployed to a serving endpoint
+  answer: [A, B]
+  explanation: >-
+    Unity Catalog brings centralised governance, auditing, lineage and cross-workspace discovery to
+    models.
+  distractors:
+    C: Stages are not supported in Unity Catalog; aliases replace them.
+    D: Every registration still creates a version.
+    E: Serving endpoints are created separately.
+  chapter_ref: 05-model-lifecycle-uc.md#unity-catalog-registry-vs-workspace-registry
+
+- id: Q-05-004
+  objective: S1.15
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A team migrating from the workspace registry asks how to express "this version is in production"
+    in Unity Catalog. What is the recommended approach?
+  options:
+    A: Use a catalog per environment and an alias such as champion for the deployed version
+    B: Use transition_model_version_stage(..., "Production")
+    C: Add "_prod" to the model version number
+    D: Delete all other versions
+  answer: [A]
+  explanation: >-
+    Stages are not supported in Unity Catalog; environments are catalogs and deployment status is an
+    alias.
+  distractors:
+    B: Stages are a workspace-registry feature.
+    C: Version numbers are assigned automatically and cannot be renamed.
+    D: Deleting versions destroys history and rollback options.
+  chapter_ref: 05-model-lifecycle-uc.md#unity-catalog-registry-vs-workspace-registry
+
+- id: Q-05-005
+  objective: S1.17
+  pool: review
+  type: single
+  difficulty: easy
+  stem: >-
+    After validation, a data scientist wants to mark version 4 of prod.churn.churn_model with
+    validation_status=approved without affecting other versions. Which call does this?
+  options:
+    A: MlflowClient().set_model_version_tag("prod.churn.churn_model", "4", "validation_status", "approved")
+    B: MlflowClient().set_registered_model_tag("prod.churn.churn_model", "validation_status", "approved")
+    C: mlflow.set_tag("validation_status", "approved")
+    D: MlflowClient().set_registered_model_alias("prod.churn.churn_model", "approved", "4")
+  answer: [A]
+  explanation: set_model_version_tag tags one specific version.
+  distractors:
+    B: A registered-model tag applies to the model as a whole, not one version.
+    C: mlflow.set_tag tags the active run, not the model version.
+    D: An alias is a pointer to one version, not a status label for any number of versions.
+  chapter_ref: 05-model-lifecycle-uc.md#tags
+
+- id: Q-05-006
+  objective: S1.17
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    A registered model carries the tag owner=team-a, but team B now owns it. The data scientist wants
+    to remove the old tag before setting a new one. Which call removes the tag?
+  options:
+    A: MlflowClient().delete_registered_model_tag("prod.churn.churn_model", "owner")
+    B: MlflowClient().delete_model_version("prod.churn.churn_model", "1")
+    C: MlflowClient().delete_registered_model_alias("prod.churn.churn_model", "owner")
+    D: mlflow.delete_tag("owner")
+  answer: [A]
+  explanation: delete_registered_model_tag removes a tag from the registered model.
+  distractors:
+    B: This deletes a model version, not a tag.
+    C: This removes an alias, and owner is a tag.
+    D: mlflow.delete_tag removes a tag from the active run.
+  chapter_ref: 05-model-lifecycle-uc.md#tags
+
+- id: Q-05-007
+  objective: S1.18
+  pool: review
+  type: single
+  difficulty: medium
+  stem: >-
+    Version 7 of prod.churn.churn_model has the alias challenger and beat the current champion
+    (version 5) in an offline comparison. Which call promotes it so that batch jobs loading
+    models:/prod.churn.churn_model@champion use version 7 on their next run?
+  options:
+    A: MlflowClient().set_registered_model_alias("prod.churn.churn_model", "champion", "7")
+    B: MlflowClient().transition_model_version_stage("prod.churn.churn_model", "7", "Production")
+    C: Register version 7 again under the name champion
+    D: Edit every batch job to load version 7
+  answer: [A]
+  explanation: >-
+    Moving the champion alias to version 7 switches every consumer that loads by alias, with no code
+    change.
+  distractors:
+    B: Stages are not supported in Unity Catalog.
+    C: Re-registering creates a new version under a different model.
+    D: Editing jobs is exactly what aliases avoid.
+  chapter_ref: 05-model-lifecycle-uc.md#aliases-champion-and-challenger
+
+- id: Q-05-008
+  objective: S1.18
+  pool: review
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO statements about model aliases in Unity Catalog are correct?
+  options:
+    A: An alias points to exactly one version of a registered model at a time
+    B: Loading models:/<name>@<alias> returns whichever version the alias currently points to
+    C: An alias can point to versions of two different registered models
+    D: Aliases are immutable once created
+    E: A version can only be loaded by alias, never by number
+  answer: [A, B]
+  explanation: >-
+    Aliases are mutable, unique pointers within a registered model, and consumers that load by alias
+    follow it.
+  distractors:
+    C: An alias belongs to a single registered model.
+    D: Aliases are mutable; moving them is how promotion works.
+    E: models:/<name>/<version> loads a specific version.
+  chapter_ref: 05-model-lifecycle-uc.md#aliases-champion-and-challenger
+
+- id: Q-05-009
+  objective: S1.14
+  pool: review
+  type: single
+  difficulty: hard
+  stem: >-
+    A job's service principal can see the catalog and schema but fails to load
+    models:/prod.churn.churn_model@champion with a permission error. Which privilege is most likely
+    missing on the registered model?
+  options:
+    A: EXECUTE
+    B: MODIFY
+    C: CREATE MODEL
+    D: SELECT
+  answer: [A]
+  explanation: >-
+    Loading a model version by alias or number requires EXECUTE on the registered model, plus USE
+    CATALOG and USE SCHEMA.
+  distractors:
+    B: MODIFY applies to tables, not to loading models.
+    C: CREATE MODEL is needed to create models, not load them.
+    D: SELECT applies to tables and views.
+  chapter_ref: 05-model-lifecycle-uc.md#registering-a-model-in-unity-catalog
