@@ -20,3 +20,5 @@ wheels/
 .vscode/launch.json
 .vscode/settings.json
 
+# claude
+.claude/
