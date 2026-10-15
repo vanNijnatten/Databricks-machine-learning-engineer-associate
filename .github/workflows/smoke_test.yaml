@@ -44,8 +44,11 @@ jobs:
             - name: Install the project
               run: |
                 uv sync \
-                  --all-extras \
-                  --dev
+                  --all-groups
+
+            - name: Check book content
+              run: |
+                uv run db-ml-associate book check
 
             - name: Run Ruff
               run: |
@@ -95,11 +98,16 @@ jobs:
             - name: Install UV
               uses: astral-sh/setup-uv@v10.0.1
 
+            - name: Install Java (local Spark tests)
+              uses: actions/setup-java@v5
+              with:
+                distribution: temurin
+                java-version: "17"
+
             - name: Install the project
               run: |
                 uv sync \
-                --all-extras \
-                --dev
+                  --all-groups
 
             - name: Run tests
               run: |

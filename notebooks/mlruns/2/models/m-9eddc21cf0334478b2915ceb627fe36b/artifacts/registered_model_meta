@@ -1,0 +1,2 @@
+model_name: spark_catalog.default.churn_model
+model_version: 2

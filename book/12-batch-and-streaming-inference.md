@@ -141,7 +141,7 @@ from pyspark.sql import functions as F
 
 spark = SparkSession.active()
 MODEL_URI = spark.conf.get("churn.model_uri", "models:/ml_associate.tutorial.churn_model@champion")
-SOURCE_TABLE = spark.conf.get("churn.source_table", "ml_associate.tutorial.customer_events")
+SOURCE_TABLE = spark.conf.get("churn.source_table", "ml_associate.tutorial.customer_events_raw")
 FEATURES = ["tenure_months", "monthly_charges", "data_usage_gb", "support_calls", "contract_type", "payment_method"]
 
 # Load the model once as a Spark UDF; the champion alias picks up promotions on the next update.

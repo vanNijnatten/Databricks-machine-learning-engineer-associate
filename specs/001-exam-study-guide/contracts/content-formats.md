@@ -30,7 +30,16 @@ title: Validation and hyperparameter tuning
 objectives: [S3.05, S3.06, S3.07, S3.08, S3.09, S3.10]
 prerequisites: [8, 9, 11]
 reading_minutes: 120
-tutorial: notebooks/ch10_tuning.py
+tutorial:
+  notebook: notebooks/ch10_tuning.py
+  minutes: 75
+  requires: [serverless]          # unity_catalog | serverless | classic_ml_runtime | model_serving | online_store | lakeflow
+  free_edition: partial           # full | partial | read_through
+  cleanup: false                  # must be true when requires model_serving or online_store
+  extra_files: []
+  steps:
+    - id: grid-search-cv
+      objectives: [S3.06, S3.09, S3.10]
 references: [hyperparameter-tuning, spark-ml-tuning]
 ---
 

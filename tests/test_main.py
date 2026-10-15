@@ -1,42 +1,30 @@
+"""The package entry point dispatches to the typer application."""
+
 import pytest
 from pytest_mock.plugin import MockerFixture
+from typer.testing import CliRunner
 
-from db_ml_associate import main
-
-
-@pytest.fixture
-def integer() -> int:
-    return 1
+from db_ml_associate import __version__, main
+from db_ml_associate.cli import app
 
 
-@pytest.mark.slow
-def test_setup_fails(integer: int, mocker: MockerFixture) -> None:
-    class TestObject:
-        def method_to_test(self, integer: int) -> None:
-            pass
-
-    # Arrange
-    mocker.patch.object(TestObject, "method_to_test")
-
-    # Act
-    obj = TestObject()
-    obj.method_to_test(integer)
-
-    # Assert
-    obj.method_to_test.assert_called_once_with(integer)  # pyright: ignore[reportUnknownMemberType, reportAttributeAccessIssue]
+def test_version() -> None:
+    assert __version__ == "0.1.0"
 
 
-@pytest.mark.parametrize("to_pass", [(True), (True)])
-def test_passes(to_pass: bool) -> None:
-    assert to_pass
+def test_main_runs_the_cli_app(mocker: MockerFixture) -> None:
+    run = mocker.patch("db_ml_associate.__main__.app")
+    main()
+    run.assert_called_once_with()
 
 
-@pytest.mark.parametrize("to_pass", [(False), (False)])
-def test_expect_exception(to_pass: bool) -> None:
-    with pytest.raises(AssertionError):
-        assert to_pass
+def test_help_lists_command_groups() -> None:
+    result = CliRunner().invoke(app, ["--help"])
+    assert result.exit_code == 0
+    for group in ("book", "datasets"):
+        assert group in result.output
 
 
-def test_package_exports_main() -> None:
-    assert callable(main)
-    assert main() is None
+@pytest.mark.parametrize("group", ["book", "datasets"])
+def test_group_help(group: str) -> None:
+    assert CliRunner().invoke(app, [group, "--help"]).exit_code == 0

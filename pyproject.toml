@@ -10,17 +10,24 @@
     license-files = [
         "LICENSE",
     ]
-    requires-python = ">=3.14"
+    requires-python = ">=3.12,<3.13"
     classifiers = [
         "Operating System :: OS Independent",
         "Private :: Do Not Upload",
-        "Programming Language :: Python :: 3.14",
+        "Programming Language :: Python :: 3.12",
     ]
+    # Pinned to Databricks Runtime 18 LTS ML (see runtime.toml)
     dependencies = [
-        "pandas>=2.3.3",
+        "matplotlib==3.10.0",
+        "mlflow==3.8.1",
+        "numpy==2.1.3",
+        "pandas==2.2.3",
+        "pyarrow==21.0.0",
         "pyyaml>=6.0.3",
         "rich>=14.2.0",
-        "textual>=6.6.0",
+        "scikit-learn==1.6.1",
+        "scipy==1.15.3",
+        "sqlalchemy==2.0.39",  # MLflow 3.8.1 imports a pool class removed in SQLAlchemy 2.1
         "typer>=0.20.0",
     ]
 
@@ -30,12 +37,28 @@
         "specify-cli>=1.0.0",
         {include-group = "lint"},
         {include-group = "test"},
+        {include-group = "spark"},
+        {include-group = "tuning"},
+        {include-group = "databricks"},
     ]
     lint = [
         "ruff==0.14.6",
         "mypy==1.18.2",
         "bandit==1.9.1",
         "radon>=6.0.1",
+        "types-PyYAML>=6.0",
+    ]
+    spark = [
+        "pyspark==4.1.0",
+    ]
+    tuning = [
+        "hyperopt==0.2.7",
+        "optuna==3.6.1",
+        "setuptools==78.1.1",  # hyperopt 0.2.7 imports pkg_resources
+    ]
+    databricks = [
+        "databricks-feature-engineering==0.13.0.1",
+        "databricks-sdk==0.67.0",
     ]
     test = [
         "pytest==9.0.1",
@@ -55,6 +78,11 @@
     required-version = "0.12.5"
 
 [tool.ruff]
+    target-version = "py312"
+    line-length = 120  # matches the editor ruler in .devcontainer/devcontainer.json
+    # Typographic characters used deliberately in teaching comments and docstrings
+    lint.allowed-confusables = ["×", "–", "→", "’"]
+
     lint.select = [
         "A",   # flake8-builtins
         "ANN", # flake8-annotations
@@ -100,6 +128,10 @@
     ]
 
 
+[tool.ruff.lint.isort]
+    known-first-party = ["db_ml_associate", "helpers"]
+
+
 [tool.ruff.format]
     quote-style = "double"
     indent-style = "space"
@@ -115,6 +147,14 @@
     "__init__.py" = [
         "F401",
     ]
+    "src/db_ml_associate/content/loaders.py" = [
+        "ANN401", # parsed YAML is untyped by nature; values are converted to typed entities immediately
+    ]
+    "notebooks/*.py" = [
+        "F821", # spark, dbutils, display are injected by the Databricks runtime
+        "E402", # imports after %pip install cells
+        "T201", # tutorials print results
+    ]
     "notebook_run unit_tests.py" = [
         "F821",
         "E402",
@@ -123,6 +163,7 @@
 
 
 [tool.mypy]
+    python_version = "3.12"
     exclude = [
         "tests",
     ]
@@ -142,14 +183,21 @@
 
 [tool.pytest]
     addopts = [
-        "--strict-markers"
+        "--strict-markers",
+        "--import-mode=importlib",
     ]
     markers = [
         "configuration",
         "data",
+        "databricks: requires a Databricks workspace (auto-skipped without one)",
+        "network: requires network access (opt-in with --run-network)",
         "slow",
+        "spark: requires a local Spark session (Java 17+)",
         "user_interface",
     ]
     testpaths = [
+        "tests"
+    ]
+    pythonpath = [
         "tests"
     ]
