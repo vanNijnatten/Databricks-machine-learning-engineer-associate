@@ -23,10 +23,12 @@ Templates requiring updates:
 - .specify/templates/tasks-template.md ✅ no change needed
 
 Follow-up TODOs:
-- Python version mismatch: pyproject.toml declares requires-python >=3.14, while Databricks
-  Runtime ML ships an older Python. Principle II requires tutorial code to target the runtime's
-  Python; reconcile in a follow-up feature (see Next Actions).
-- README.md still contains template placeholder text ("a project on...").
+- RESOLVED 2026-10-15 (feature 001-exam-study-guide, T001/T003): Python version mismatch —
+  pyproject.toml now requires Python >=3.12,<3.13 and .python-version is 3.12, matching
+  Databricks Runtime 18 LTS ML (Python 3.12.3) recorded in runtime.toml.
+- RESOLVED 2026-10-15 (feature 001-exam-study-guide, T150): README.md template placeholder text
+  replaced with the project description and quick start.
+No version bump: only this report changed; principles and sections are unchanged.
 -->
 
 # Databricks Machine Learning Associate Constitution

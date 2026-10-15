@@ -4,6 +4,22 @@ title: Cleaning and transforming data
 objectives: [S2.02, S2.05, S2.06, S2.07, S2.08, S2.09]
 prerequisites: [6]
 reading_minutes: 90
+tutorial:
+  notebook: notebooks/ch07_cleaning.py
+  minutes: 40
+  requires: [serverless]
+  free_edition: full
+  cleanup: false
+  extra_files: []
+  steps:
+    - id: remove-outliers
+      objectives: [S2.02]
+    - id: impute
+      objectives: [S2.05, S2.06]
+    - id: one-hot-encoding
+      objectives: [S2.07, S2.08]
+    - id: log-transform
+      objectives: [S2.09]
 references: [spark-mllib]
 ---
 
@@ -16,6 +32,8 @@ Real data has extreme values, gaps and text categories; most algorithms want cle
 chapter covers the four preparation steps the exam tests: removing outliers, imputing missing
 values, one-hot encoding categories and log-transforming skewed values — and when *not* to apply
 each one.
+
+> **Tutorial:** [`notebooks/ch07_cleaning.py`](../notebooks/ch07_cleaning.py) · about 40 minutes · **Requires:** serverless or classic compute · **Free Edition:** yes · **Clean-up:** none. Run [`notebooks/00_setup.py`](../notebooks/00_setup.py) once first.
 
 ## Learning objectives
 

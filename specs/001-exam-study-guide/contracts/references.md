@@ -31,7 +31,7 @@ A table produced by the docs-coverage sweep: every sub-page under these docs ind
 | Hyperparameter tuning | `/aws/en/machine-learning/automl-hyperparam-tuning/` |
 | Model serving | `/aws/en/machine-learning/model-serving/` |
 | Model inference | `/aws/en/machine-learning/model-inference/` |
-| MLOps | `/aws/en/machine-learning/mlops/` |
+| MLOps | `/aws/en/machine-learning/mlops/mlops-workflow` (moved from `/aws/en/machine-learning/mlops/`, now 404) |
 | Lakeflow pipelines | `/aws/en/ldp/` |
 | Runtime ML release notes | `/aws/en/release-notes/runtime/` |
 | Notebooks / visualisations / dbutils | `/aws/en/notebooks/`, `/aws/en/dev-tools/databricks-utils` |

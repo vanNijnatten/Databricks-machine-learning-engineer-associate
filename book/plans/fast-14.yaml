@@ -1,0 +1,95 @@
+# 14-day fast-track study plan (about 2½ hours a day). Same reading order as the standard plan;
+# the tutorials of chapters 8, 9 and 11 are optional (skim them if you already know scikit-learn).
+# Minutes are computed by `book check` and `book render-plans`; do not add them here.
+track: fast
+days:
+  - day: 1
+    goals: [Know the exam format, Set up the workspace, Understand ML runtimes and Unity Catalog]
+    items:
+      - introduction: true
+      - chapter: 1
+      - tutorial: notebooks/ch01_platform.py
+    self_check: Can you explain deploy-code vs deploy-models in two sentences?
+  - day: 2
+    goals: [Compute summary statistics, Visualise and compare features]
+    items:
+      - chapter: 6
+      - tutorial: notebooks/ch06_exploring.py
+    self_check: How do you compare two continuous and two categorical features?
+  - day: 3
+    goals: [Remove outliers, Impute missing values, Decide on one-hot encoding and log transforms]
+    items:
+      - chapter: 7
+    self_check: When is the median a better fill value than the mean?
+  - day: 4
+    goals: [Select algorithms, Mitigate class imbalance, Reason about bias and variance]
+    items:
+      - chapter: 8
+      - tutorial: notebooks/ch08_foundations.py
+        optional: true
+    self_check: Name three ways to handle a rare positive class.
+  - day: 5
+    goals: [Practise cleaning and transforming, Build training pipelines]
+    items:
+      - tutorial: notebooks/ch07_cleaning.py
+      - chapter: 9
+      - tutorial: notebooks/ch09_pipelines.py
+        optional: true
+    self_check: Is a fitted StringIndexerModel an estimator or a transformer?
+  - day: 6
+    goals: [Use classification and regression metrics, Pick the metric for a scenario]
+    items:
+      - chapter: 11
+      - tutorial: notebooks/ch11_evaluation.py
+        optional: true
+    self_check: Why must log-scale predictions be exponentiated before computing RMSE?
+  - day: 7
+    goals: [Compare cross-validation with a split, Count models in a grid search, "Tune with grid, random and Bayesian search", Use Hyperopt fmin]
+    items:
+      - chapter: 10
+    self_check: How many models does a 4 × 3 grid with 3-fold cross-validation train?
+  - day: 8
+    goals: [Tune and parallelise in practice, Learn MLflow tracking]
+    items:
+      - tutorial: notebooks/ch10_tuning.py
+      - chapter: 4
+    self_check: Why does a Hyperopt objective return the negative score?
+  - day: 9
+    goals: [Understand AutoML, Learn feature engineering in Unity Catalog]
+    items:
+      - chapter: 2
+      - chapter: 3
+    self_check: What does AutoML generate, and what does fe.log_model add to a model?
+  - day: 10
+    goals: [Manage models in Unity Catalog, "Compare batch, streaming and real-time inference"]
+    items:
+      - chapter: 5
+      - chapter: 12
+    self_check: Which call promotes a challenger to champion, and why do pipelines score with Spark UDFs?
+  - day: 11
+    goals: ["Practise tracking, AutoML, feature tables and the model registry"]
+    items:
+      - tutorial: notebooks/ch04_tracking.py
+      - tutorial: notebooks/ch02_automl.py
+      - tutorial: notebooks/ch03_features.py
+      - tutorial: notebooks/ch05_registry.py
+    self_check: Can you find the best run with MlflowClient.search_runs without looking at the chapter?
+  - day: 12
+    goals: [Practise batch and streaming inference, "Deploy, query and split traffic on Model Serving"]
+    items:
+      - tutorial: notebooks/ch12_inference.py
+      - chapter: 13
+      - tutorial: notebooks/ch13_serving.py
+    self_check: What does an 80/20 traffic split do to repeated identical requests?
+  - day: 13
+    goals: [Take practice exam 1 under exam conditions, Fix its weak areas]
+    items:
+      - exam: PE1
+      - review: Revisit the chapter sections linked from every missed PE1 question
+    self_check: Did you score at least 80 % in every section?
+  - day: 14
+    goals: [Take practice exam 2, Final revision with the cheat sheet]
+    items:
+      - exam: PE2
+      - appendix: B
+    self_check: Did you score at least 80 % in every section of both practice exams? If not, add review days before booking.

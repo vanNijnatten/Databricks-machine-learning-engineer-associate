@@ -150,6 +150,20 @@
     "src/db_ml_associate/content/loaders.py" = [
         "ANN401", # parsed YAML is untyped by nature; values are converted to typed entities immediately
     ]
+    "src/db_ml_associate/ch02_automl/workspace.py" = ["ANN401"]  # injected workspace clients are duck-typed (research R5)
+    "src/db_ml_associate/ch03_features/workspace.py" = ["ANN401"]
+    "src/db_ml_associate/ch13_serving/workspace.py" = ["ANN401"]
+    "src/db_ml_associate/ch13_serving/custom_model.py" = ["ANN401"]  # MLflow passes an untyped context
+    "src/db_ml_associate/ch05_registry/registry.py" = ["ANN401"]  # pyfunc models and copy_model_version clients
+    "src/db_ml_associate/ch06_exploring/summary.py" = ["ANN401"]  # dbutils exists only in notebooks
+    "src/db_ml_associate/ch12_inference/pitfalls.py" = ["ANN401"]  # model.predict returns flavour-specific types
+    "src/db_ml_associate/ch*/pitfalls.py" = [
+        "RUF059", # wrong_* snippets show the complete (wrong) workflow, including results they never use
+    ]
+    "tests/helpers/notebook_runner.py" = [
+        "T201", # the notebook runner reports progress on stdout for the test to read
+        "ANN401", # stand-ins for notebook globals accept whatever the tutorials pass
+    ]
     "notebooks/*.py" = [
         "F821", # spark, dbutils, display are injected by the Databricks runtime
         "E402", # imports after %pip install cells
@@ -168,6 +182,25 @@
         "tests",
     ]
     ignore_missing_imports = true
+
+# pyspark's stubs type DataFrame.first()/head() as Row | None and conf.get(key, default) as str | None.
+# The affected lines are book snippets, which stay free of None guards that cannot trigger here.
+[[tool.mypy.overrides]]
+    module = [
+        "db_ml_associate.ch06_exploring.compare",
+        "db_ml_associate.ch07_cleaning.impute",
+        "db_ml_associate.ch07_cleaning.outliers",
+    ]
+    disable_error_code = ["index", "union-attr"]
+
+[[tool.mypy.overrides]]
+    module = ["db_ml_associate.ch12_inference.churn_scoring_pipeline"]
+    disable_error_code = ["arg-type"]
+
+# mlflow.pyfunc re-exports PythonModel dynamically, which mypy cannot see; the snippet keeps the exam's spelling.
+[[tool.mypy.overrides]]
+    module = ["db_ml_associate.ch13_serving.custom_model"]
+    disable_error_code = ["name-defined"]
 
 
 [tool.bandit]

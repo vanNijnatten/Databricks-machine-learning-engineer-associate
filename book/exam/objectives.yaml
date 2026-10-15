@@ -6,7 +6,7 @@ exam_guide:
   url: https://www.databricks.com/sites/default/files/2025-02/databricks-certified-machine-learning-associate-exam-guide-1-mar-2025.pdf
   questions: 48
   minutes: 90
-  checked_on: 2026-10-14
+  checked_on: 2026-10-15
 
 objectives:
   # Section 1: Databricks Machine Learning

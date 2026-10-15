@@ -3,12 +3,14 @@
 Exit codes: 0 success, 1 validation failure, 2 usage error.
 """
 
+from datetime import date
 from pathlib import Path
 from typing import Annotated
 
 import typer
 from rich.console import Console
 
+from db_ml_associate.cli import links
 from db_ml_associate.cli.appendix import render_appendix_a
 from db_ml_associate.cli.book_check import run_checks
 from db_ml_associate.cli.coverage import (
@@ -17,6 +19,8 @@ from db_ml_associate.cli.coverage import (
     write_coverage,
 )
 from db_ml_associate.cli.datasets import datasets_app
+from db_ml_associate.cli.exam import exam_app, render_appendix_d
+from db_ml_associate.cli.plans import render_plans
 from db_ml_associate.cli.snippets import sync_book
 from db_ml_associate.content.loaders import load_book
 
@@ -29,6 +33,7 @@ app = typer.Typer(
 book_app = typer.Typer(no_args_is_help=True, help="Validate and maintain the book.")
 app.add_typer(book_app, name="book")
 app.add_typer(datasets_app, name="datasets")
+app.add_typer(exam_app, name="exam")
 
 RootOption = Annotated[Path, typer.Option("--root", help="Repository root.", file_okay=False)]
 
@@ -85,3 +90,42 @@ def book_render_appendix_a(root: RootOption = Path(".")) -> None:
     target = root / "book" / "appendix-a-exam-vs-platform.md"
     target.write_text(render_appendix_a(load_book(root)), encoding="utf-8")
     console.print(f"wrote {target}")
+
+
+@book_app.command("render-plans")
+def book_render_plans(root: RootOption = Path(".")) -> None:
+    """Write book/appendix-c-study-plans.md from book/plans/*.yaml."""
+    target = root / "book" / "appendix-c-study-plans.md"
+    target.write_text(render_plans(load_book(root)), encoding="utf-8")
+    console.print(f"wrote {target}")
+
+
+@book_app.command("render-appendix-d")
+def book_render_appendix_d(root: RootOption = Path(".")) -> None:
+    """Write book/appendix-d-practice-exams.md from the practice exams and their questions."""
+    target = root / "book" / "appendix-d-practice-exams.md"
+    target.write_text(render_appendix_d(load_book(root)), encoding="utf-8")
+    console.print(f"wrote {target}")
+
+
+@book_app.command("check-links")
+def book_check_links(
+    root: RootOption = Path("."),
+    update: Annotated[
+        bool, typer.Option("--update-verified", help="Set last_verified to today for passing URLs.")
+    ] = False,
+) -> None:
+    """Fetch every reference URL and the exam guide; fail on errors or moved pages (needs network)."""
+    book = load_book(root)
+    results = links.check_links(book, links.default_opener())
+    failures = [result for result in results if not result.ok]
+    for result in failures:
+        console.print(f"[red]error[/red]   {result}", markup=True)
+    console.print(f"{len(results) - len(failures)} of {len(results)} links ok")
+    if update:
+        changed = links.update_verified(
+            root / "book" / "references.yaml", {r.url for r in results if r.ok}, date.today()
+        )
+        console.print(f"last_verified updated for {changed} references")
+    if failures:
+        raise typer.Exit(code=1)

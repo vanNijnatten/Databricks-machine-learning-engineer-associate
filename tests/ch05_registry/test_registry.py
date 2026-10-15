@@ -37,7 +37,7 @@ def churn_split() -> tuple[pd.DataFrame, pd.DataFrame]:
 
 @pytest.mark.parametrize("name", ["churn_model", "tutorial.churn_model", "a.b.c.d"])
 def test_unity_catalog_names_have_three_levels(name: str) -> None:
-    with pytest.raises(ValueError, match="catalog.schema.model"):
+    with pytest.raises(ValueError, match=r"catalog\.schema\.model"):
         validate_uc_name(name)
 
 

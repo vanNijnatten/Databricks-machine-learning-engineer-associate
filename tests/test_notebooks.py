@@ -69,3 +69,13 @@ def test_chapter_tutorial_metadata_matches_notebook(chapter: object) -> None:
     header = _header(ROOT / tutorial.notebook)
     assert _header_value(header, "Free Edition") == tutorial.free_edition
     assert _header_value(header, "Estimated time") == f"{tutorial.minutes} min"
+
+
+def test_pipeline_source_notebook_matches_tested_module() -> None:
+    from db_ml_associate.cli.snippets import extract_region
+
+    module = (ROOT / "src/db_ml_associate/ch12_inference/churn_scoring_pipeline.py").read_text(encoding="utf-8")
+    notebook = (ROOT / "notebooks/ch12_pipeline_source.py").read_text(encoding="utf-8")
+    code = "\n".join(line for line in notebook.splitlines() if not line.startswith("#")).strip()
+    region = "\n".join(line for line in extract_region(module, "pipeline").splitlines() if not line.startswith("#"))
+    assert code == region.strip()

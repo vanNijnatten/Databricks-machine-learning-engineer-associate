@@ -4,6 +4,18 @@ title: "Pipelines: estimators and transformers"
 objectives: [S3.03, S3.04]
 prerequisites: [8]
 reading_minutes: 70
+tutorial:
+  notebook: notebooks/ch09_pipelines.py
+  minutes: 30
+  requires: [serverless]
+  free_edition: full
+  cleanup: false
+  extra_files: []
+  steps:
+    - id: spark-pipeline
+      objectives: [S3.03, S3.04]
+    - id: sklearn-pipeline
+      objectives: [S3.04]
 references: [spark-mllib]
 ---
 
@@ -16,6 +28,8 @@ A model is rarely a single algorithm. Before a logistic regression can learn, mi
 filled, categories turned into numbers and features gathered into one vector. A **pipeline** chains
 these steps so they are fitted together, applied together and saved together. The exam asks you to
 tell estimators from transformers and to build such a pipeline.
+
+> **Tutorial:** [`notebooks/ch09_pipelines.py`](../notebooks/ch09_pipelines.py) · about 30 minutes · **Requires:** serverless or classic compute · **Free Edition:** yes · **Clean-up:** none. Run [`notebooks/00_setup.py`](../notebooks/00_setup.py) once first.
 
 ## Learning objectives
 

@@ -4,6 +4,20 @@ title: The Databricks ML platform
 objectives: [S1.01, S1.02, S1.16]
 prerequisites: []
 reading_minutes: 70
+tutorial:
+  notebook: notebooks/ch01_platform.py
+  minutes: 20
+  requires: [unity_catalog]
+  free_edition: full
+  cleanup: false
+  extra_files: []
+  steps:
+    - id: runtime-info
+      objectives: [S1.02]
+    - id: unity-catalog-namespace
+      objectives: [S1.01]
+    - id: environments-as-catalogs
+      objectives: [S1.01, S1.16]
 references:
   [databricks-runtime-ml, dbr-18-lts-ml, train-models, serverless-dependencies, unity-catalog, mlops-workflow, mlops-deployment-patterns]
 ---
@@ -18,6 +32,8 @@ This chapter is the map for everything else in Section 1: the compute you train 
 runtime), where data and models live (Unity Catalog), and how work moves from a notebook to
 production (MLOps). The exam asks about the *advantages* of ML runtimes, the *best practices* of an
 MLOps strategy, and when to promote *code* versus *models*.
+
+> **Tutorial:** [`notebooks/ch01_platform.py`](../notebooks/ch01_platform.py) · about 20 minutes · **Requires:** Unity Catalog · **Free Edition:** yes · **Clean-up:** none. Run [`notebooks/00_setup.py`](../notebooks/00_setup.py) once first.
 
 ## Learning objectives
 

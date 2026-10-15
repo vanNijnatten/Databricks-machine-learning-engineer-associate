@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import mlflow
+import mlflow.pyfunc
 import numpy as np
 import pandas as pd
 from mlflow.models import infer_signature

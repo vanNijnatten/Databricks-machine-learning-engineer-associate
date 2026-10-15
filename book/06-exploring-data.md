@@ -4,6 +4,20 @@ title: Exploring data
 objectives: [S2.01, S2.03, S2.04]
 prerequisites: []
 reading_minutes: 70
+tutorial:
+  notebook: notebooks/ch06_exploring.py
+  minutes: 35
+  requires: [serverless]
+  free_edition: full
+  cleanup: false
+  extra_files: []
+  steps:
+    - id: summary-statistics
+      objectives: [S2.01]
+    - id: visualizations
+      objectives: [S2.03]
+    - id: compare-features
+      objectives: [S2.04]
 references: [dbutils, eda-tutorial, notebook-visualizations, spark-mllib]
 ---
 
@@ -18,6 +32,8 @@ missing, which features move together. The exam asks for three skills: computing
 statistics on a Spark DataFrame, choosing visualisations for categorical and continuous features,
 and comparing two features with the right method. The examples use `customer_churn` and
 `house_prices` ([`data/README.md`](../data/README.md)).
+
+> **Tutorial:** [`notebooks/ch06_exploring.py`](../notebooks/ch06_exploring.py) · about 35 minutes · **Requires:** serverless or classic compute · **Free Edition:** yes · **Clean-up:** none. Run [`notebooks/00_setup.py`](../notebooks/00_setup.py) once first.
 
 ## Learning objectives
 
@@ -121,7 +137,7 @@ to the **Table** tab of the result
 **Without code:** `display(df)` and **+ → Visualization** in the results pane opens the
 visualisation editor: choose a type (bar, line, area, pie, histogram, heatmap, scatter, box, …), the
 columns, and aggregation
-([Visualizations in Databricks notebooks](https://docs.databricks.com/aws/en/notebooks/visualizations/)).
+([Visualizations in Databricks notebooks](https://docs.databricks.com/aws/en/visualizations)).
 
 **With code** (matplotlib on pandas; for big data aggregate in Spark first, or plot a sample):
 

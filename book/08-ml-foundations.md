@@ -4,6 +4,20 @@ title: ML foundations
 objectives: [S3.01, S3.02, S3.15]
 prerequisites: []
 reading_minutes: 90
+tutorial:
+  notebook: notebooks/ch08_foundations.py
+  minutes: 30
+  requires: [serverless]
+  free_edition: full
+  cleanup: false
+  extra_files: []
+  steps:
+    - id: algorithm-choice
+      objectives: [S3.01]
+    - id: imbalance
+      objectives: [S3.02]
+    - id: bias-variance
+      objectives: [S3.15]
 references: [train-models, dbr-18-lts-ml]
 ---
 
@@ -17,6 +31,8 @@ The exam assumes you can reason about machine learning without a Databricks feat
 which algorithm suits a scenario, what to do when one class is rare, and why a model that is
 perfect on its training data can be useless. This chapter covers exactly those foundations, with
 code you can run on the tutorial datasets described in [`data/README.md`](../data/README.md).
+
+> **Tutorial:** [`notebooks/ch08_foundations.py`](../notebooks/ch08_foundations.py) · about 30 minutes · **Requires:** serverless or classic compute · **Free Edition:** yes · **Clean-up:** none. Run [`notebooks/00_setup.py`](../notebooks/00_setup.py) once first.
 
 ## Learning objectives
 

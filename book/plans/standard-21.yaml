@@ -1,0 +1,127 @@
+# 21-day standard study plan (about 2 hours a day). Minutes are computed by `book check` and
+# `book render-plans` from the chapters' reading and tutorial estimates; do not add them here.
+track: standard
+days:
+  - day: 1
+    goals: [Know the exam format and how this book works, Set up the workspace, Understand ML runtimes and Unity Catalog]
+    items:
+      - introduction: true
+      - chapter: 1
+      - tutorial: notebooks/ch01_platform.py
+    self_check: Can you explain deploy-code vs deploy-models in two sentences, and name two advantages of the ML runtime?
+  - day: 2
+    goals: [Compute summary statistics, Choose visualisations and comparison methods for feature pairs]
+    items:
+      - chapter: 6
+      - tutorial: notebooks/ch06_exploring.py
+    self_check: How do .summary() and dbutils.data.summarize differ, and how do you compare two categorical features?
+  - day: 3
+    goals: [Remove outliers, Impute missing values, Decide when one-hot encoding and log transforms are appropriate]
+    items:
+      - chapter: 7
+      - tutorial: notebooks/ch07_cleaning.py
+    self_check: When do you impute with the median instead of the mean, and why is one-hot encoding a poor fit for a 1,000-value column in a tree model?
+  - day: 4
+    goals: [Select algorithms for scenarios, Mitigate class imbalance, Reason about bias and variance]
+    items:
+      - chapter: 8
+      - tutorial: notebooks/ch08_foundations.py
+    self_check: Name three ways to handle a 2 % positive class, and describe what high variance looks like in training and validation error.
+  - day: 5
+    goals: [Tell estimators from transformers, Build a training pipeline in Spark ML and scikit-learn]
+    items:
+      - chapter: 9
+      - tutorial: notebooks/ch09_pipelines.py
+    self_check: What does Pipeline.fit() return, and which of its stages are estimators?
+  - day: 6
+    goals: [Compute classification and regression metrics, Pick the metric for a scenario, Back-transform log predictions]
+    items:
+      - chapter: 11
+      - tutorial: notebooks/ch11_evaluation.py
+    self_check: Which metric fits "missing a fraud case is very expensive", and why must you exponentiate log-price predictions before computing RMSE?
+  - day: 7
+    goals: [Compare cross-validation with a train-validation split, Count the models a grid search trains, "Tune with grid, random and Bayesian search"]
+    items:
+      - chapter: 10
+    self_check: How many models does a 3 × 2 × 3 grid with 5-fold cross-validation train?
+  - day: 8
+    goals: [Tune with Hyperopt fmin and Optuna, Parallelise single-node tuning, Log runs to MLflow]
+    items:
+      - tutorial: notebooks/ch10_tuning.py
+      - chapter: 4
+    self_check: Why does a Hyperopt objective return the negative F1, and which compute does SparkTrials need?
+  - day: 9
+    goals: ["Log metrics, artifacts and models manually", Find the best run with the Client API, Understand what AutoML generates]
+    items:
+      - tutorial: notebooks/ch04_tracking.py
+      - chapter: 2
+    self_check: Which order_by finds the run with the highest F1, and what three artefacts does an AutoML experiment produce?
+  - day: 10
+    goals: [Create and write feature tables in Unity Catalog, Train and score with feature lookups]
+    items:
+      - chapter: 3
+    self_check: What does fe.log_model store that mlflow.sklearn.log_model does not, and how do online and offline feature tables differ?
+  - day: 11
+    goals: [Run AutoML (or read through it), Build a feature table and score with score_batch]
+    items:
+      - tutorial: notebooks/ch02_automl.py
+      - tutorial: notebooks/ch03_features.py
+    self_check: Which columns does score_batch need as input, and why did you exclude customer_id from AutoML?
+  - day: 12
+    goals: [Register models in Unity Catalog, Set and remove tags, Promote a challenger with aliases]
+    items:
+      - chapter: 5
+      - tutorial: notebooks/ch05_registry.py
+    self_check: Which MlflowClient call promotes a challenger, and why are stages not used in Unity Catalog?
+  - day: 13
+    goals: ["Compare batch, streaming and real-time serving", Score with pandas and Spark UDFs, Score a stream with a pipeline]
+    items:
+      - chapter: 12
+      - tutorial: notebooks/ch12_inference.py
+    self_check: Why does a Delta Live Tables (Lakeflow) pipeline apply the model as a Spark UDF rather than calling an endpoint?
+  - day: 14
+    goals: [Deploy a custom model to Model Serving, Query an endpoint, Split traffic between versions]
+    items:
+      - chapter: 13
+      - tutorial: notebooks/ch13_serving.py
+    self_check: What happens when the traffic percentages of an endpoint do not add up to 100, and which request format do you use for tabular data?
+  - day: 15
+    goals: [Consolidate Section 1 (Databricks Machine Learning), Learn the exam-vs-platform differences]
+    items:
+      - review: Re-answer the review questions of chapters 1-5 you got wrong
+      - appendix: A
+    self_check: For each row of Appendix A, can you say what the exam expects?
+  - day: 16
+    goals: [Consolidate Sections 2-4]
+    items:
+      - review: Re-answer the review questions of chapters 6-11 you got wrong
+      - review: Re-answer the review questions of chapters 12-13 you got wrong
+    self_check: Which three topics still feel uncertain? Write them down for day 17.
+  - day: 17
+    goals: [Close the gaps you listed yesterday, First pass through the cheat sheet]
+    items:
+      - review: Re-read the sections behind your uncertain topics
+      - appendix: B
+    self_check: Can you reproduce every formula of the cheat sheet without looking?
+  - day: 18
+    goals: [Take practice exam 1 under exam conditions]
+    items:
+      - exam: PE1
+    self_check: Did you score at least 80 % in every section? List the chapters behind every missed question.
+  - day: 19
+    goals: [Fix the weak areas practice exam 1 revealed]
+    items:
+      - review: Revisit the chapter sections linked from every missed PE1 question
+      - appendix: B
+    self_check: Can you now explain why each correct PE1 answer is correct and each distractor is wrong?
+  - day: 20
+    goals: [Take practice exam 2 under exam conditions]
+    items:
+      - exam: PE2
+    self_check: Did you score at least 80 % in every section of both practice exams? If not, plan extra review before booking.
+  - day: 21
+    goals: [Final revision, Book the exam when you are ready]
+    items:
+      - review: Revisit the chapter sections linked from every missed PE2 question
+      - appendix: B
+    self_check: Can you explain the exam's preferred answer for Hyperopt, Delta Live Tables, stages and FeatureStoreClient questions?

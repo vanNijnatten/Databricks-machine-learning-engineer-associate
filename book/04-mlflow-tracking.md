@@ -4,7 +4,23 @@ title: Experiment tracking with MLflow
 objectives: [S1.11, S1.12, S1.13]
 prerequisites: [9, 11]
 reading_minutes: 80
-references: [mlflow-tracking, mlflow-experiments, mlflow-runs, mlflow-3, hyperparameter-tuning]
+tutorial:
+  notebook: notebooks/ch04_tracking.py
+  minutes: 40
+  requires: [serverless]
+  free_edition: full
+  cleanup: false
+  extra_files: []
+  steps:
+    - id: manual-logging
+      objectives: [S1.12]
+    - id: autolog-and-nested-runs
+      objectives: [S1.12]
+    - id: mlflow-ui-tour
+      objectives: [S1.13]
+    - id: best-run
+      objectives: [S1.11]
+references: [mlflow-tracking, mlflow-experiments, mlflow-runs, mlflow-3, hyperparameter-tuning, mlflow-logged-model]
 ---
 
 # 4. Experiment tracking with MLflow
@@ -16,6 +32,8 @@ Which hyperparameters produced the model in production? On which data was it tra
 was it? **MLflow** answers these questions by recording every training run. Databricks hosts the
 MLflow tracking server for you. The exam expects you to log metrics, artifacts and models manually,
 find the best run with the client API, and know what the MLflow UI shows.
+
+> **Tutorial:** [`notebooks/ch04_tracking.py`](../notebooks/ch04_tracking.py) · about 40 minutes · **Requires:** serverless or classic compute · **Free Edition:** yes · **Clean-up:** none. Run [`notebooks/00_setup.py`](../notebooks/00_setup.py) once first.
 
 ## Learning objectives
 
@@ -32,7 +50,7 @@ find the best run with the client API, and know what the MLflow UI shows.
 |---|---|
 | **Run** | One execution of training code. Holds **parameters** (inputs), **metrics** (numeric results, optionally over steps), **tags** (key–value labels), **artifacts** (files) and the source (notebook revision, Git commit) |
 | **Experiment** | A collection of related runs that you compare and search |
-| **Logged model** (MLflow 3) | A model as a first-class object with its own ID, linked to the run that created it and to later evaluation runs |
+| **Logged model** (MLflow 3) | A model as a first-class object with its own ID, linked to the run that created it and to later evaluation runs ([Logged Models](https://docs.databricks.com/aws/en/mlflow/logged-model)) |
 | **Registered model** | A named, versioned, governed model in Unity Catalog (chapter 5) |
 
 On Databricks there are two kinds of experiments

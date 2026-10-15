@@ -1,1 +1,0 @@
-{"columns": ["tenure_months", "monthly_charges", "data_usage_gb", "support_calls", "contract_type", "payment_method"], "data": [[65, 113.94, 2.58, 1, "one-year", "bank_transfer"], [68, 70.11, 9.43, 0, "month-to-month", "card"], [23, 90.66, 7.93, 0, "two-year", "card"]]}

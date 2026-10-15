@@ -8,7 +8,7 @@
   claim: Databricks Runtime 18 LTS (Apache Spark 4.1.0) was released on 2026-06-10; 19 is newer but not LTS.
   objectives: [S1.02]
   chapters: [1]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: dbr-18-lts
@@ -17,7 +17,7 @@
   claim: Databricks Runtime 18 LTS runs Python 3.12.3 and Apache Spark 4.1.0.
   objectives: [S1.02]
   chapters: [1]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: dbr-18-lts-ml
@@ -28,7 +28,7 @@
     optuna 3.6.1, databricks-feature-engineering 0.13.0.1 and databricks-sdk 0.67.0; hyperopt is not listed.
   objectives: [S1.02, S3.05]
   chapters: [1, 10]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: dbr-18-0-ml
@@ -37,7 +37,7 @@
   claim: AutoML was removed as a built-in library in Databricks Runtime 18.0 ML.
   objectives: [S1.03, S1.04]
   chapters: [2]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: automl
@@ -46,10 +46,13 @@
   claim: >-
     AutoML supports classification, regression and forecasting, generates a data exploration notebook and
     a notebook per trial logged to MLflow, requires dedicated (classic) compute, and is not a built-in
-    library from Databricks Runtime 18.0 ML.
+    library from Databricks Runtime 18.0 ML. It runs trials with scikit-learn, XGBoost and LightGBM
+    (Prophet and ARIMA for forecasting), imports the data exploration and best trial notebooks, stores
+    other trial notebooks as MLflow artifacts, and includes SHAP code that is disabled by default (this
+    content moved here from the former "How AutoML works" page).
   objectives: [S1.03, S1.04]
   chapters: [2]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: feature-tables-uc
@@ -60,7 +63,7 @@
     FeatureEngineeringClient.create_table or SQL PRIMARY KEY constraints, and upsert with write_table(mode="merge").
   objectives: [S1.05, S1.06, S1.07]
   chapters: [3]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: train-with-feature-store
@@ -71,7 +74,7 @@
     and fe.score_batch fetches features automatically at scoring time.
   objectives: [S1.08, S1.09]
   chapters: [3]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: online-feature-store
@@ -82,7 +85,7 @@
     an offline feature table (primary key, Change Data Feed for TRIGGERED/CONTINUOUS) for low-latency lookup.
   objectives: [S1.10]
   chapters: [3]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: discrepancy
   note: >-
     The page shows publish_table(..., publish_mode="TRIGGERED"|"CONTINUOUS"|"SNAPSHOT"). The client
@@ -99,7 +102,7 @@
     deprecated in favour of mlflow.pyspark.ml.autolog().
   objectives: [S3.05, S3.06, S3.07]
   chapters: [10]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: mlflow-tracking
@@ -110,7 +113,7 @@
     LoggedModel entity; mlflow.search_runs returns a pandas DataFrame.
   objectives: [S1.11, S1.12, S1.13]
   chapters: [4]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: model-lifecycle-uc
@@ -121,7 +124,7 @@
     versions; MLflow 3 defaults the registry URI to databricks-uc; the workspace model registry is legacy.
   objectives: [S1.14, S1.15, S1.17, S1.18]
   chapters: [5]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: mlops-deployment-patterns
@@ -132,7 +135,7 @@
     setups. An environment (dev, staging, prod) typically corresponds to a Unity Catalog catalog.
   objectives: [S1.01, S1.16]
   chapters: [1]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: dbutils
@@ -143,16 +146,16 @@
     DataFrame; it scans the whole DataFrame and some statistics are approximate unless precise=True.
   objectives: [S2.01]
   chapters: [6]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: notebook-visualizations
-  url: https://docs.databricks.com/aws/en/notebooks/visualizations/
-  title: Visualizations in Databricks notebooks
+  url: https://docs.databricks.com/aws/en/visualizations
+  title: Visualizations in Databricks notebooks and SQL editor
   claim: Add visualizations and data profiles to a display() result with the + button in the results pane.
   objectives: [S2.01, S2.03]
   chapters: [6]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: model-inference
@@ -161,7 +164,7 @@
   claim: Databricks recommends AI Functions (ai_query) for batch inference and Model Serving for real-time inference.
   objectives: [S4.01, S4.03]
   chapters: [12]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: lakeflow-pipelines
@@ -170,7 +173,7 @@
   claim: Lakeflow pipelines (Spark Declarative Pipelines) are the current product formerly known as Delta Live Tables.
   objectives: [S4.04]
   chapters: [12]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: lakeflow-transform
@@ -179,7 +182,7 @@
   claim: Load an MLflow model with mlflow.pyfunc.spark_udf and apply it inside a pipeline dataset definition.
   objectives: [S4.04]
   chapters: [12]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: lakeflow-python-ref
@@ -188,7 +191,7 @@
   claim: Pipelines are defined in Python with the pyspark.pipelines module (from pyspark import pipelines as dp).
   objectives: [S4.04]
   chapters: [12]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: model-serving
@@ -197,7 +200,7 @@
   claim: Model Serving exposes MLflow models (including custom pyfunc models) as serverless REST endpoints.
   objectives: [S4.02, S4.05]
   chapters: [13]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: serve-multiple-models
@@ -208,7 +211,7 @@
     traffic_percentage); querying a specific served model ignores the traffic split.
   objectives: [S4.06]
   chapters: [13]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: query-custom-endpoints
@@ -219,7 +222,7 @@
     instances or inputs; the MLflow deployments client predict() and ai_query are alternatives.
   objectives: [S4.05]
   chapters: [13]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: free-edition-limitations
@@ -230,7 +233,7 @@
     support online tables and allows one active pipeline per type.
   objectives: []
   chapters: [2, 3, 10, 13]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: train-models
@@ -241,7 +244,7 @@
     popular libraries such as PyTorch, TensorFlow and XGBoost.
   objectives: [S1.02, S3.01]
   chapters: [1, 8]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: spark-mllib
@@ -252,7 +255,7 @@
     example notebooks build classification and regression pipelines and a custom transformer.
   objectives: [S3.03, S3.04]
   chapters: [7, 9, 10]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: hyperopt-concepts
@@ -264,7 +267,7 @@
     SparkTrials parallelism defaults to the number of executors and is capped at 128.
   objectives: [S3.05, S3.06, S3.07]
   chapters: [10]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: optuna
@@ -275,7 +278,7 @@
     Optuna storage and MlflowSparkStudy runs parallel trials on PySpark executors; TPESampler is the default.
   objectives: [S3.06, S3.07]
   chapters: [10]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: serverless-limitations
@@ -284,7 +287,7 @@
   claim: Serverless compute supports only Spark Connect APIs; Spark RDD APIs are not supported.
   objectives: [S3.07]
   chapters: [10]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: eda-tutorial
@@ -295,7 +298,7 @@
     histogram for numeric, string and date columns; dbutils.data.summarize does the same in code.
   objectives: [S2.01, S2.03]
   chapters: [6]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: databricks-runtime-ml
@@ -308,7 +311,7 @@
     deep learning training.
   objectives: [S1.02]
   chapters: [1]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: mlops-workflow
@@ -320,7 +323,7 @@
     to Champion, serve or batch-score the Champion alias, monitor, and start with scheduled retraining.
   objectives: [S1.01, S1.16, S1.18]
   chapters: [1, 5]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: unity-catalog
@@ -332,7 +335,7 @@
     Catalog Explorer.
   objectives: [S1.05, S1.15]
   chapters: [1, 3, 5]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: serverless-dependencies
@@ -343,7 +346,7 @@
     Python packages of Databricks Runtime for Machine Learning preinstalled; do not install PySpark.
   objectives: [S1.02]
   chapters: [1]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: mlflow-experiments
@@ -355,7 +358,7 @@
     runs with a Source link to the notebook version and supports filtering by metrics and parameters.
   objectives: [S1.12, S1.13]
   chapters: [4]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: mlflow-runs
@@ -367,7 +370,7 @@
     metric tables across selected runs.
   objectives: [S1.13]
   chapters: [4]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: mlflow-3
@@ -379,7 +382,7 @@
     is databricks-uc.
   objectives: [S1.12, S1.14]
   chapters: [4, 5]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: automl-api-reference
@@ -392,20 +395,9 @@
     metrics, notebook_url, model_path, load_model()); import_notebook imports a trial notebook.
   objectives: [S1.03, S1.04]
   chapters: [2]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
-- id: how-automl-works
-  url: https://docs.databricks.com/aws/en/machine-learning/automl/how-automl-works
-  title: How Databricks AutoML works
-  claim: >-
-    AutoML prepares data, runs distributed trials across scikit-learn, XGBoost and LightGBM (Prophet and
-    ARIMA for forecasting), imports the data exploration and best trial notebooks, stores other trial
-    notebooks as MLflow artifacts, and includes SHAP code that is disabled by default.
-  objectives: [S1.03, S1.04]
-  chapters: [2]
-  last_verified: 2026-10-14
-  status: ok
 
 - id: automl-classification-data-prep
   url: https://docs.databricks.com/aws/en/machine-learning/automl/classification-data-prep
@@ -416,7 +408,7 @@
     time column, samples large data, and detects semantic types; exclude_cols removes columns.
   objectives: [S1.03]
   chapters: [2]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: feature-store-overview
@@ -429,7 +421,7 @@
     models; Feature Views are a newer declarative way to define features.
   objectives: [S1.05, S1.08, S1.09, S1.10]
   chapters: [3]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: workspace-feature-store
@@ -440,7 +432,7 @@
     19 August 2024; Databricks recommends Feature Engineering in Unity Catalog.
   objectives: [S1.05]
   chapters: [3]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: ai-query
@@ -453,7 +445,7 @@
     available on Databricks SQL Classic.
   objectives: [S4.01, S4.03]
   chapters: [12, 13]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: custom-models
@@ -465,7 +457,7 @@
     30 minutes of inactivity causes a cold start and is not recommended for production uptime.
   objectives: [S4.02]
   chapters: [13]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
   status: ok
 
 - id: create-serving-endpoints
@@ -478,5 +470,72 @@
     needs USE CATALOG, USE SCHEMA and EXECUTE on the model.
   objectives: [S4.02, S4.05, S4.06]
   chapters: [13]
-  last_verified: 2026-10-14
+  last_verified: 2026-10-15
+  status: ok
+
+- id: automatic-feature-lookup
+  url: https://docs.databricks.com/aws/en/machine-learning/feature-store/automatic-feature-lookup
+  title: Model Serving with automatic feature lookup
+  claim: >-
+    Model Serving automatically looks up feature values from a Databricks Online Feature Store (recommended)
+    for models logged with FeatureEngineeringClient.log_model; the table can be published any time before deployment.
+  objectives: [S1.10]
+  chapters: [3]
+  last_verified: 2026-10-15
+  status: ok
+
+- id: feature-lineage
+  url: https://docs.databricks.com/aws/en/machine-learning/feature-store/lineage
+  title: Feature governance and lineage
+  claim: >-
+    Access to feature tables in Unity Catalog is managed by Unity Catalog privileges; log_model captures lineage
+    from feature tables and functions to models, visible in the Lineage tab of Catalog Explorer.
+  objectives: [S1.05]
+  chapters: [3]
+  last_verified: 2026-10-15
+  status: ok
+
+- id: mlflow-logged-model
+  url: https://docs.databricks.com/aws/en/mlflow/logged-model
+  title: Track and compare models using MLflow Logged Models
+  claim: >-
+    In MLflow 3, mlflow.<flavor>.log_model() creates a LoggedModel with a unique ID that links the model's
+    parameters, metrics, artifacts and code across its lifecycle; LoggedModels are produced from runs.
+  objectives: [S1.12, S1.13]
+  chapters: [4]
+  last_verified: 2026-10-15
+  status: ok
+
+- id: workspace-model-registry
+  url: https://docs.databricks.com/aws/en/machine-learning/manage-model-lifecycle/workspace-model-registry
+  title: Manage model lifecycle using the Workspace Model Registry (legacy)
+  claim: >-
+    The Workspace Model Registry is legacy; Unity Catalog workspaces should use Models in Unity Catalog. With
+    MLflow 3 or DBR 13.3 LTS+ and a Unity Catalog default catalog, models go to Unity Catalog unless
+    mlflow.set_registry_uri("databricks") is set.
+  objectives: [S1.15]
+  chapters: [5]
+  last_verified: 2026-10-15
+  status: ok
+
+- id: automl-classification
+  url: https://docs.databricks.com/aws/en/machine-learning/automl/classification
+  title: Classification with AutoML
+  claim: >-
+    Start an AutoML classification experiment from Experiments in the sidebar: choose compute with Databricks
+    Runtime ML, the table, target column, evaluation metric, stopping conditions, columns to use and how nulls are imputed.
+  objectives: [S1.03, S1.04]
+  chapters: [2]
+  last_verified: 2026-10-15
+  status: ok
+
+- id: model-serving-intro
+  url: https://docs.databricks.com/aws/en/machine-learning/model-serving/model-serving-intro
+  title: "Tutorial: Deploy and query a custom model"
+  claim: >-
+    Basic steps to deploy and query a custom (traditional ML) model with Model Serving; the model must be
+    registered, and can be logged with autologging, a built-in flavor, or custom pyfunc logging.
+  objectives: [S4.02, S4.05]
+  chapters: [13]
+  last_verified: 2026-10-15
   status: ok

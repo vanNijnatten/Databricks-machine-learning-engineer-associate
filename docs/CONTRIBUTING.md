@@ -30,6 +30,7 @@ would also be very happy about:
 - [Style guides](#style-guides)
 - [Commit Messages](#commit-messages)
 - [Join The Project Team](#join-the-project-team)
+- [Runtime upgrade checklist](#runtime-upgrade-checklist)
 
 
 ## Code of Conduct
@@ -166,6 +167,25 @@ Updating, improving and correcting the documentation
 
 ## Join The Project Team
 <!-- TODO -->
+
+## Runtime upgrade checklist
+
+All tutorial code targets one Databricks Runtime ML LTS release (`runtime.toml`). When a new Runtime ML
+LTS is released, upgrade in one pull request:
+
+1. **Pins** — read the new Runtime ML release notes and update `runtime.toml` (runtime, Python, Spark,
+   `[libraries]`, `docs_snapshot`) and the matching `==` pins in `pyproject.toml`; adjust
+   `.python-version` if the Python minor version changed; run `uv lock`.
+2. **Local gates** — run `uv run pytest` and `uv run db-ml-associate book check --strict`; fix code and
+   re-sync the book with `uv run db-ml-associate book sync-snippets`.
+3. **Workspace** — on the new runtime, run `notebooks/00_setup.py`, every chapter notebook,
+   `notebooks/00_run_workspace_tests.py` and `notebooks/99_cleanup.py`.
+4. **References** — re-read every page in `book/references.yaml`, update `claim`, `last_verified` and
+   `status` (`discrepancy` with a `note` where documentation and behaviour differ), and run
+   `uv run db-ml-associate book check-links`.
+5. **Platform changes and verification record** — update `book/exam/platform-changes.yaml` (then
+   `book render-appendix-a`) and record the notebook outcomes, run times and Free Edition status in
+   `book/exam/tutorial-verification.md`.
 
 <!-- omit in toc -->
 ## Attribution

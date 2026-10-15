@@ -22,3 +22,8 @@ wheels/
 
 # claude
 .claude/
+
+# MLflow local runs
+mlruns/
+mlartifacts/
+spark-warehouse/

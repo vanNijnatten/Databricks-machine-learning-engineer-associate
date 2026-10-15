@@ -36,7 +36,7 @@ The guide publishes no weights per section; with 18 objectives Section 1 is the 
 tutorial steps and questions.
 
 > **Check before you book:** this book targets the exam guide of **2025-03-01**, still the current
-> version when the book was last checked (2026-10-14). Databricks asks candidates to check for a newer
+> version when the book was last checked (2026-10-15). Databricks asks candidates to check for a newer
 > guide **two weeks before the exam** — if the objectives changed, compare them with
 > [`exam/objectives.yaml`](exam/objectives.yaml).
 
@@ -110,7 +110,7 @@ first:
 
 > Introduction → 1 → 6 → 7 → 8 → 9 → 11 → 10 → 4 → 2 → 3 → 5 → 12 → 13 → practice exams
 
-Pick the **21-day plan** (about 2½ hours a day) or the **14-day fast track** (about 3 hours a day).
+Pick the **21-day plan** (about 2 hours a day) or the **14-day fast track** (about 2½ hours a day).
 Then:
 
 1. Take both [practice exams](appendix-d-practice-exams.md) under exam conditions (90 minutes, no

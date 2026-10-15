@@ -4,7 +4,21 @@ title: Model lifecycle in Unity Catalog
 objectives: [S1.14, S1.15, S1.17, S1.18]
 prerequisites: [1, 4]
 reading_minutes: 70
-references: [model-lifecycle-uc, mlflow-3, mlops-workflow, unity-catalog, workspace-feature-store]
+tutorial:
+  notebook: notebooks/ch05_registry.py
+  minutes: 35
+  requires: [unity_catalog]
+  free_edition: full
+  cleanup: false
+  extra_files: []
+  steps:
+    - id: register-model
+      objectives: [S1.14, S1.15]
+    - id: tags
+      objectives: [S1.17]
+    - id: champion-challenger
+      objectives: [S1.18]
+references: [model-lifecycle-uc, mlflow-3, mlops-workflow, unity-catalog, workspace-feature-store, workspace-model-registry]
 ---
 
 # 5. Model lifecycle in Unity Catalog
@@ -16,6 +30,8 @@ A logged model is just an artifact of a run. To deploy it you **register** it: i
 of a named, governed **registered model** in Unity Catalog. Versions are labelled with **tags** and
 promoted with **aliases** such as `champion` and `challenger`. Jobs and endpoints refer to the
 alias, so promotion is a single API call.
+
+> **Tutorial:** [`notebooks/ch05_registry.py`](../notebooks/ch05_registry.py) · about 35 minutes · **Requires:** Unity Catalog · **Free Edition:** yes · **Clean-up:** optional (`99_cleanup`). Run [`notebooks/00_setup.py`](../notebooks/00_setup.py) once first.
 
 ## Learning objectives
 
@@ -82,7 +98,7 @@ model discovery across workspaces**, while staying compatible with the open-sour
 
 > **Platform change:** stages are **not supported** in Unity Catalog. Use catalogs for
 > environments and aliases for deployment status. Workspaces without Unity Catalog fall back to the
-> legacy workspace registry.
+> legacy workspace registry ([Workspace Model Registry (legacy)](https://docs.databricks.com/aws/en/machine-learning/manage-model-lifecycle/workspace-model-registry)).
 
 ## Tags
 

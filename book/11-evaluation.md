@@ -4,6 +4,20 @@ title: Evaluation metrics
 objectives: [S3.11, S3.12, S3.13, S3.14]
 prerequisites: [8]
 reading_minutes: 80
+tutorial:
+  notebook: notebooks/ch11_evaluation.py
+  minutes: 30
+  requires: [serverless]
+  free_edition: full
+  cleanup: false
+  extra_files: []
+  steps:
+    - id: classification-metrics
+      objectives: [S3.11, S3.13]
+    - id: regression-metrics
+      objectives: [S3.12]
+    - id: back-transform
+      objectives: [S3.14]
 references: [spark-mllib]
 ---
 
@@ -16,6 +30,8 @@ references: [spark-mllib]
 A metric turns "is this model any good?" into a number. The exam expects you to compute the common
 classification and regression metrics, to pick the one that matches a business objective, and to
 remember that a model trained on `log(price)` must be judged in euros, not in logs.
+
+> **Tutorial:** [`notebooks/ch11_evaluation.py`](../notebooks/ch11_evaluation.py) · about 30 minutes · **Requires:** serverless or classic compute · **Free Edition:** yes · **Clean-up:** none. Run [`notebooks/00_setup.py`](../notebooks/00_setup.py) once first.
 
 ## Learning objectives
 

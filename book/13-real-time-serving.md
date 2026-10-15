@@ -4,7 +4,21 @@ title: Real-time model serving
 objectives: [S4.02, S4.05, S4.06]
 prerequisites: [5, 12]
 reading_minutes: 70
-references: [model-serving, custom-models, create-serving-endpoints, query-custom-endpoints, serve-multiple-models, ai-query, free-edition-limitations]
+tutorial:
+  notebook: notebooks/ch13_serving.py
+  minutes: 45
+  requires: [unity_catalog, model_serving]
+  free_edition: partial
+  cleanup: true
+  extra_files: []
+  steps:
+    - id: custom-model
+      objectives: [S4.02]
+    - id: deploy-and-query
+      objectives: [S4.02, S4.05]
+    - id: traffic-split
+      objectives: [S4.06]
+references: [model-serving, custom-models, create-serving-endpoints, query-custom-endpoints, serve-multiple-models, ai-query, free-edition-limitations, model-serving-intro]
 ---
 
 # 13. Real-time model serving
@@ -21,6 +35,8 @@ to deploy a custom model, query it, and split traffic between model versions.
 > **Requires:** Model Serving (capped on Free Edition: few endpoints, CPU only). An endpoint costs
 > money while it is running; enable scale-to-zero for learning and **delete the endpoint** at the end
 > of the tutorial (`notebooks/99_cleanup.py`).
+
+> **Tutorial:** [`notebooks/ch13_serving.py`](../notebooks/ch13_serving.py) · about 45 minutes · **Requires:** Model Serving (billed while serving; scale-to-zero enabled) · **Free Edition:** partly · **Clean-up:** delete the endpoint. Run [`notebooks/00_setup.py`](../notebooks/00_setup.py) once first.
 
 ## Learning objectives
 
@@ -80,7 +96,8 @@ add extras with `pip_requirements` / `extra_pip_requirements`, and code files wi
 
 <!-- objectives: S4.02, S4.05 -->
 
-([Create custom model serving endpoints](https://docs.databricks.com/aws/en/machine-learning/model-serving/create-manage-serving-endpoints))
+([Create custom model serving endpoints](https://docs.databricks.com/aws/en/machine-learning/model-serving/create-manage-serving-endpoints);
+[Tutorial: Deploy and query a custom model](https://docs.databricks.com/aws/en/machine-learning/model-serving/model-serving-intro))
 
 **UI:** **Serving → Create serving endpoint** → name → served entity **My models – Unity Catalog** →
 model and version → compute type (CPU or GPU) → size → scale to zero → **Create**. The endpoint shows

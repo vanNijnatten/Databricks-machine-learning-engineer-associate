@@ -4,6 +4,24 @@ title: Feature engineering in Unity Catalog
 objectives: [S1.05, S1.06, S1.07, S1.08, S1.09, S1.10]
 prerequisites: [1, 4, 9]
 reading_minutes: 90
+tutorial:
+  notebook: notebooks/ch03_features.py
+  minutes: 60
+  requires: [unity_catalog, online_store]
+  free_edition: partial
+  cleanup: true
+  extra_files: []
+  steps:
+    - id: create-feature-table
+      objectives: [S1.05, S1.06]
+    - id: write-features
+      objectives: [S1.07]
+    - id: train-with-feature-lookup
+      objectives: [S1.08]
+    - id: score-batch
+      objectives: [S1.09]
+    - id: publish-online
+      objectives: [S1.10]
 references:
   [feature-store-overview, feature-tables-uc, train-with-feature-store, online-feature-store, workspace-feature-store, unity-catalog, free-edition-limitations]
 ---
@@ -19,6 +37,8 @@ Several models need the same features, and the values used at training time must
 used at prediction time. **Feature engineering in Unity Catalog** stores features in governed
 **feature tables**, joins them into training sets, remembers which features each model used, and
 looks them up again when the model scores — offline in batch or online in real time.
+
+> **Tutorial:** [`notebooks/ch03_features.py`](../notebooks/ch03_features.py) · about 60 minutes · **Requires:** Unity Catalog; the optional online-store step is billed while the store exists · **Free Edition:** partly · **Clean-up:** delete the online store if you created one. Run [`notebooks/00_setup.py`](../notebooks/00_setup.py) once first.
 
 ## Learning objectives
 
@@ -47,7 +67,8 @@ Because it lives in the account-level Unity Catalog metastore rather than in one
 | **Client** | `FeatureEngineeringClient` (`databricks.feature_engineering`) | `FeatureStoreClient` (`databricks.feature_store`) |
 
 > **Exam tip:** "account level in Unity Catalog vs workspace level" → cross-workspace **sharing and
-> discovery**, **centralised governance/access control** and **lineage**.
+> discovery**, **centralised governance/access control** and **lineage**
+> ([Feature governance and lineage](https://docs.databricks.com/aws/en/machine-learning/feature-store/lineage)).
 
 > **Beyond the exam:** Databricks now also offers **Feature Views** — features declared as Unity
 > Catalog objects whose pipelines Databricks manages. Feature tables, covered here, remain the
@@ -194,7 +215,8 @@ predictions = fe.score_batch(model_uri=model_uri, df=keys)  # adds a `prediction
 `score_batch` returns the input DataFrame plus the looked-up features and a `prediction` column.
 Columns in `df` with the same name as a feature *override* the stored value. Because the same lookup
 logic runs at training and scoring time, **training/serving skew** is avoided. The same model can be
-served on Model Serving with automatic lookups from an online store (chapter 13).
+served on Model Serving with automatic lookups from an online store (chapter 13;
+[Model Serving with automatic feature lookup](https://docs.databricks.com/aws/en/machine-learning/feature-store/automatic-feature-lookup)).
 
 ## Offline vs online feature tables
 

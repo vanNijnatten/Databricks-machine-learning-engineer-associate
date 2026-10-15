@@ -4,6 +4,22 @@ title: Validation and hyperparameter tuning
 objectives: [S3.05, S3.06, S3.07, S3.08, S3.09, S3.10]
 prerequisites: [8, 9, 11]
 reading_minutes: 120
+tutorial:
+  notebook: notebooks/ch10_tuning.py
+  minutes: 75
+  requires: [serverless, classic_ml_runtime]
+  free_edition: partial
+  cleanup: false
+  extra_files: []
+  steps:
+    - id: cross-validation
+      objectives: [S3.08, S3.09, S3.10]
+    - id: grid-random-bayesian
+      objectives: [S3.06]
+    - id: hyperopt-fmin
+      objectives: [S3.05]
+    - id: parallel-tuning
+      objectives: [S3.07]
 references: [hyperparameter-tuning, hyperopt-concepts, optuna, serverless-limitations, spark-mllib, dbr-18-lts-ml]
 ---
 
@@ -18,6 +34,8 @@ Doing that honestly needs **validation**: a way to score each setting on data th
 train on. This chapter covers cross-validation, the three search strategies the exam names, Hyperopt
 (still on the exam) next to Optuna (what Databricks recommends today), parallel tuning, and how to
 count the models a search trains.
+
+> **Tutorial:** [`notebooks/ch10_tuning.py`](../notebooks/ch10_tuning.py) · about 75 minutes · **Requires:** serverless or classic; `SparkTrials` needs classic Dedicated compute (the notebook falls back to Optuna on serverless) · **Free Edition:** partly · **Clean-up:** none. Run [`notebooks/00_setup.py`](../notebooks/00_setup.py) once first.
 
 ## Learning objectives
 

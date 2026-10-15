@@ -41,6 +41,7 @@ from db_ml_associate.content.official_samples import (
     OFFICIAL_SAMPLE_STEMS,
     SIMILARITY_THRESHOLD,
 )
+from db_ml_associate.content.plans import plan_problems
 
 OBJECTIVES_FILE = "book/exam/objectives.yaml"
 REFERENCES_FILE = "book/references.yaml"
@@ -399,6 +400,19 @@ def check_platform_changes(book: Book) -> list[Issue]:
 # --- Plans and runtime ---------------------------------------------------------------------------
 
 
+def check_plans(book: Book) -> list[Issue]:
+    """Each study plan schedules everything within the daily and total time limits."""
+    if not book.plans:
+        return [_warning("book/plans/", 1, "no study plans yet (open work)")]
+    issues = []
+    for plan in book.plans:
+        lines = {f"day {day.day}:": day.line for day in plan.days}
+        for problem in plan_problems(plan, book):
+            line = next((line for prefix, line in lines.items() if problem.startswith(prefix)), 1)
+            issues.append(_error(plan.path, line or 1, problem))
+    return issues
+
+
 def check_plan_prerequisites(book: Book) -> list[Issue]:
     """Warn when a plan schedules a chapter before one of its prerequisites."""
     issues = []
@@ -488,6 +502,7 @@ def run_checks(root: Path, strict: bool = False, today: date | None = None) -> l
         lambda: check_links(book, anchors),
         lambda: check_references(book, today or date.today()),
         lambda: check_platform_changes(book),
+        lambda: check_plans(book),
         lambda: check_plan_prerequisites(book),
         lambda: check_coverage(book),
         lambda: check_runtime(book),

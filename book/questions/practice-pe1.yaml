@@ -1,0 +1,1127 @@
+# Practice exam 1 — one question per exam objective (S1.01-S4.06), pool: practice.
+# Original questions following the conventions of the official sample questions (research R13b).
+
+- id: Q-PE1-001
+  objective: S1.01
+  pool: practice
+  type: multiple
+  difficulty: medium
+  stem: >-
+    A retail company is setting up MLOps on Databricks for its demand-forecasting models. The team
+    wants a setup that follows Databricks' recommended practices. Which TWO practices should they adopt?
+  options:
+    A: "Keep all ML code in Git and promote it through dev, staging and prod with CI/CD"
+    B: "Give data scientists write access to the production catalog so they can hot-fix models"
+    C: "Separate dev, staging and prod environments, for example as separate Unity Catalog catalogs"
+    D: "Train production models interactively in a notebook and copy the pickle file to prod"
+    E: "Use one shared catalog for all environments so that tables are never duplicated"
+  answer: [A, C]
+  explanation: >-
+    Databricks recommends version-controlling code and promoting it with CI/CD, and isolating
+    environments (commonly one catalog per environment) with access controls between them.
+  distractors:
+    B: Direct write access to production bypasses review and testing; production should be changed by automation.
+    D: Manual, untracked artefacts are not reproducible and skip validation.
+    E: Mixing environments in one catalog removes the isolation that protects production data and models.
+  chapter_ref: 01-databricks-ml-platform.md#mlops-strategy-best-practices
+
+- id: Q-PE1-002
+  objective: S1.02
+  pool: practice
+  type: single
+  difficulty: easy
+  stem: >-
+    A new team member keeps installing scikit-learn, XGBoost and MLflow on every cluster and fights
+    version conflicts between them. What is the main advantage of switching to a Databricks Runtime
+    for Machine Learning?
+  options:
+    A: "It runs Python code faster than the standard runtime for every workload"
+    B: "It comes with popular ML libraries preinstalled in versions tested to work together"
+    C: "It removes the need for Unity Catalog permissions"
+    D: "It allows only one notebook per cluster, which avoids conflicts"
+  answer: [B]
+  explanation: >-
+    The ML runtime preinstalls the common ML libraries (scikit-learn, XGBoost, MLflow, PyTorch and
+    others) in compatible, tested versions, so teams do not manage those dependencies themselves.
+  distractors:
+    A: The ML runtime is about libraries and tooling, not generally faster Python execution.
+    C: Governance still applies; the runtime does not bypass Unity Catalog.
+    D: There is no such restriction.
+  chapter_ref: 01-databricks-ml-platform.md#databricks-runtime-for-machine-learning
+
+- id: Q-PE1-003
+  objective: S1.03
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist runs an AutoML classification experiment on a table with 40 columns and wants
+    to understand which input columns drove the best model's predictions. Where does AutoML help
+    with this?
+  options:
+    A: "AutoML drops every column it does not use and lists them in the error log"
+    B: "The generated notebook of the best trial can compute SHAP values to show feature importance"
+    C: "AutoML only accepts tables that already contain a feature-importance column"
+    D: "AutoML registers one model per column so you can compare them"
+  answer: [B]
+  explanation: >-
+    AutoML's trial notebooks are editable source code; they include an optional SHAP section that
+    explains feature importance for the trained model, which supports feature selection.
+  distractors:
+    A: AutoML does not report feature selection through error logs.
+    C: No such input requirement exists.
+    D: AutoML trains models per algorithm and hyperparameter set, not one per column.
+  chapter_ref: 02-automl.md#how-automl-facilitates-model-and-feature-selection
+
+- id: Q-PE1-004
+  objective: S1.04
+  pool: practice
+  type: multiple
+  difficulty: medium
+  stem: >-
+    A manager asks why the team should start new classification projects with Databricks AutoML.
+    Which TWO statements are advantages AutoML brings to the model development process?
+  options:
+    A: "It produces a strong baseline model quickly, with every trial tracked in MLflow"
+    B: "It guarantees the best possible model, so no further tuning is ever needed"
+    C: "It generates editable notebooks with the source code of each trial (glass-box approach)"
+    D: "It deploys the best model to a serving endpoint automatically"
+    E: "It removes the need to check the data for leakage"
+  answer: [A, C]
+  explanation: >-
+    AutoML quickly delivers a baseline and logs all trials to MLflow, and it generates readable,
+    modifiable notebooks so data scientists can review and improve the code.
+  distractors:
+    B: AutoML is a starting point; data scientists still review and improve the results.
+    D: AutoML does not create serving endpoints.
+    E: Leakage and data-quality checks remain the data scientist's responsibility.
+  chapter_ref: 02-automl.md#advantages-for-the-model-development-process
+
+- id: Q-PE1-005
+  objective: S1.05
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A company has three Databricks workspaces attached to the same Unity Catalog metastore. The
+    marketing team built customer features in one workspace and the risk team, working in another
+    workspace, wants to reuse them. What is the main benefit of having created the features as
+    feature tables in Unity Catalog rather than in a workspace feature store?
+  options:
+    A: "The tables are discoverable and usable from every workspace attached to the metastore, with central access control and lineage"
+    B: "The tables are automatically copied into each workspace every night"
+    C: "Feature tables in Unity Catalog do not need a primary key"
+    D: "Unity Catalog feature tables can only be read by the user who created them"
+  answer: [A]
+  explanation: >-
+    Feature tables in Unity Catalog are governed at the account/metastore level: any workspace
+    attached to the metastore can discover and use them, with central permissions and lineage.
+  distractors:
+    B: No copying is needed; the same table is shared through Unity Catalog.
+    C: Feature tables in Unity Catalog require a primary key.
+    D: Access is controlled with grants; tables can be shared with other users and groups.
+  chapter_ref: 03-feature-engineering-uc.md#feature-tables-in-unity-catalog-vs-the-workspace-feature-store
+
+- id: Q-PE1-006
+  objective: S1.06
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A data engineer has a Spark DataFrame `store_features` with one row per `store_id`. Which code
+    creates a feature table in Unity Catalog from it?
+  options:
+    A: "fe = FeatureEngineeringClient(); fe.create_table(name='main.retail.store_features', primary_keys=['store_id'], df=store_features)"
+    B: "store_features.write.format('feature').save('/features/store')"
+    C: "fe = FeatureEngineeringClient(); fe.create_table(name='store_features', df=store_features)"
+    D: "mlflow.log_table(store_features, 'store_features')"
+  answer: [A]
+  explanation: >-
+    FeatureEngineeringClient.create_table takes a three-level Unity Catalog name, the primary key
+    columns and a DataFrame that provides the schema and initial data.
+  distractors:
+    B: There is no 'feature' data source; feature tables are Delta tables in Unity Catalog with a primary key.
+    C: The primary key is required and the name should be catalog.schema.table.
+    D: mlflow.log_table logs an artifact to a run; it does not create a feature table.
+  chapter_ref: 03-feature-engineering-uc.md#creating-a-feature-table
+
+- id: Q-PE1-007
+  objective: S1.07
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    Every night a job recomputes features for the stores whose sales changed and must update only
+    those rows in the existing feature table `main.retail.store_features`, leaving all other stores
+    untouched. Which call does this?
+  options:
+    A: "fe.write_table(name='main.retail.store_features', df=changed, mode='merge')"
+    B: "fe.create_table(name='main.retail.store_features', primary_keys=['store_id'], df=changed)"
+    C: "changed.write.mode('overwrite').saveAsTable('main.retail.store_features')"
+    D: "fe.score_batch(model_uri='main.retail.store_features', df=changed)"
+  answer: [A]
+  explanation: >-
+    write_table with mode='merge' upserts by primary key: changed rows are updated, new keys are
+    inserted and all other rows stay as they are.
+  distractors:
+    B: create_table fails because the table already exists.
+    C: Overwrite replaces the whole table, deleting the stores that did not change.
+    D: score_batch scores a model; it does not write features.
+  chapter_ref: 03-feature-engineering-uc.md#writing-data-to-a-feature-table
+
+- id: Q-PE1-008
+  objective: S1.08
+  pool: practice
+  type: multiple
+  difficulty: hard
+  stem: >-
+    A data scientist has a DataFrame `labels` with `store_id` and the label `weekly_sales`, and a
+    feature table `main.retail.store_features` keyed by `store_id`. She wants to train a model whose
+    features are looked up automatically at scoring time. Which TWO steps are part of the correct
+    workflow?
+  options:
+    A: "Build a training set with fe.create_training_set(df=labels, feature_lookups=[FeatureLookup(table_name='main.retail.store_features', lookup_key='store_id')], label='weekly_sales')"
+    B: "Join the feature table to labels with a SQL query and log the model with mlflow.sklearn.log_model"
+    C: "Log the trained model with fe.log_model(..., training_set=training_set, flavor=mlflow.sklearn)"
+    D: "Store the label column in the feature table so that it can be looked up with the features"
+    E: "Convert the feature table to CSV before training"
+  answer: [A, C]
+  explanation: >-
+    create_training_set joins the looked-up features to the labels; fe.log_model packages the model
+    with the feature lookup metadata, so scoring needs only the keys.
+  distractors:
+    B: A manual join works for training, but mlflow.sklearn.log_model does not record the feature lookups for scoring.
+    D: Labels do not belong in feature tables; they are joined from the training DataFrame.
+    E: No conversion is needed; the training set is a Spark DataFrame.
+  chapter_ref: 03-feature-engineering-uc.md#training-with-features-from-a-feature-table
+
+- id: Q-PE1-009
+  objective: S1.09
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A model was logged with `fe.log_model` using feature lookups on `store_id`. A batch job has a
+    DataFrame `stores` that contains only the column `store_id`. How should the job produce
+    predictions?
+  options:
+    A: "Join every feature manually, then call mlflow.pyfunc.load_model(model_uri).predict()"
+    B: "Call fe.score_batch(model_uri=model_uri, df=stores); the features are looked up automatically"
+    C: "Call fe.read_table(name=model_uri) to read the predictions"
+    D: "It is not possible: feature-store models can only be served by real-time endpoints"
+  answer: [B]
+  explanation: >-
+    score_batch reads the feature lookup metadata stored with the model, joins the features for the
+    given keys and adds a prediction column.
+  distractors:
+    A: Manual joins are unnecessary and risk using different feature logic than training.
+    C: read_table reads a feature table, not model predictions.
+    D: Batch scoring with score_batch is the standard way to use these models offline.
+  chapter_ref: 03-feature-engineering-uc.md#scoring-with-features-from-a-feature-table
+
+- id: Q-PE1-010
+  objective: S1.10
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A fraud model is served behind a real-time endpoint and needs each customer's latest features
+    within a few milliseconds per request. Training uses the same features from historical data.
+    How should the features be stored?
+  options:
+    A: "Only in an offline feature table; the endpoint queries the Delta table for every request"
+    B: "In an offline feature table for training and batch scoring, published to an online store for low-latency lookups"
+    C: "Only in an online store; training reads from it directly"
+    D: "In a CSV file bundled with the model artifact"
+  answer: [B]
+  explanation: >-
+    Offline feature tables (Delta in Unity Catalog) serve training and batch scoring; online tables
+    serve millisecond lookups for real-time inference and are published from the offline table.
+  distractors:
+    A: Querying Delta tables per request is too slow for millisecond latency.
+    C: Online stores are optimised for key lookups, not for building training sets over history.
+    D: Bundled files go stale immediately and are not governed.
+  chapter_ref: 03-feature-engineering-uc.md#offline-vs-online-feature-tables
+
+- id: Q-PE1-011
+  objective: S1.11
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    An experiment contains 200 runs that each logged the metric `val_rmse` (lower is better). Which
+    call returns the single best run?
+  options:
+    A: "client.search_runs(experiment_ids=[exp_id], order_by=['metrics.val_rmse ASC'], max_results=1)"
+    B: "client.search_runs(experiment_ids=[exp_id], order_by=['metrics.val_rmse DESC'], max_results=1)"
+    C: "client.get_run(exp_id).data.metrics['val_rmse']"
+    D: "client.search_experiments(order_by=['metrics.val_rmse ASC'])"
+  answer: [A]
+  explanation: >-
+    For an error metric the best run has the lowest value, so sort ascending and keep the first
+    result.
+  distractors:
+    B: Descending order returns the run with the highest, i.e. worst, RMSE.
+    C: get_run takes a run ID, not an experiment ID, and does not search.
+    D: search_experiments lists experiments, not runs, and cannot order by run metrics.
+  chapter_ref: 04-mlflow-tracking.md#finding-the-best-run-with-the-client-api
+
+- id: Q-PE1-012
+  objective: S1.12
+  pool: practice
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Inside `with mlflow.start_run():` a data scientist has trained `model` and computed `auc`. She
+    also saved a plot to `roc.png`. Which TWO calls log the metric and the plot to the run?
+  options:
+    A: "mlflow.log_metric('auc', auc)"
+    B: "mlflow.log_param('auc', auc)"
+    C: "mlflow.log_artifact('roc.png')"
+    D: "mlflow.set_tag('roc.png', 'artifact')"
+    E: "mlflow.register_model('roc.png', 'roc')"
+  answer: [A, C]
+  explanation: >-
+    Metrics are logged with log_metric (or log_metrics) and arbitrary files with log_artifact
+    (or log_figure for a matplotlib figure object).
+  distractors:
+    B: Parameters are inputs such as hyperparameters; a score belongs in metrics.
+    D: A tag stores a short string; it does not upload the file.
+    E: register_model registers a logged model in the registry; a PNG is not a model.
+  chapter_ref: 04-mlflow-tracking.md#logging-manually
+
+- id: Q-PE1-013
+  objective: S1.13
+  pool: practice
+  type: multiple
+  difficulty: easy
+  stem: >-
+    A reviewer opens a run in the MLflow UI on Databricks without running any code. Which TWO pieces
+    of information can they see there?
+  options:
+    A: "The parameters and metrics logged in the run"
+    B: "The CPU temperature of the driver during training"
+    C: "The run's artifacts, such as the logged model with its signature"
+    D: "The passwords of the users who created the run"
+    E: "The SQL warehouse bill for the month"
+  answer: [A, C]
+  explanation: >-
+    The run page shows parameters, metrics (with charts), tags, the source notebook and the
+    artifacts, including the MLmodel file, signature and input example of logged models.
+  distractors:
+    B: Hardware temperatures are not shown in MLflow.
+    D: Credentials are never stored in runs.
+    E: Billing is not part of the MLflow UI.
+  chapter_ref: 04-mlflow-tracking.md#the-mlflow-ui
+
+- id: Q-PE1-014
+  objective: S1.14
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A run with ID `abc123` logged a model under the name `model`. The team wants to register it in
+    the Unity Catalog model registry. Which call is correct?
+  options:
+    A: "mlflow.register_model('runs:/abc123/model', 'prod.retail.demand_model')"
+    B: "mlflow.register_model('runs:/abc123/model', 'demand_model')"
+    C: "mlflow.log_model('abc123', 'prod.retail.demand_model')"
+    D: "client.transition_model_version_stage('demand_model', 1, 'Production')"
+  answer: [A]
+  explanation: >-
+    Models in Unity Catalog have three-level names (catalog.schema.model); register_model takes
+    the logged model's URI and that name. With MLflow 3 on Databricks the registry URI defaults to
+    Unity Catalog ('databricks-uc').
+  distractors:
+    B: A one-level name is a workspace-registry name; Unity Catalog needs catalog.schema.model.
+    C: log_model logs a new model; it does not register an existing run's model.
+    D: Stages are a workspace-registry feature and are not supported in Unity Catalog.
+  chapter_ref: 05-model-lifecycle-uc.md#registering-a-model-in-unity-catalog
+
+- id: Q-PE1-015
+  objective: S1.15
+  pool: practice
+  type: single
+  difficulty: easy
+  stem: >-
+    Why does Databricks recommend registering models in Unity Catalog rather than in the legacy
+    workspace model registry?
+  options:
+    A: "Unity Catalog models can be shared across workspaces with central access control, auditing and lineage"
+    B: "Unity Catalog models do not need a signature"
+    C: "Unity Catalog supports the Staging and Production stages"
+    D: "Models in Unity Catalog are stored inside the notebook"
+  answer: [A]
+  explanation: >-
+    Unity Catalog gives models the same governance as data: cross-workspace access, centralised
+    permissions, audit logs and lineage to the data and notebooks that produced them.
+  distractors:
+    B: Unity Catalog requires a model signature for new versions.
+    C: Stages are replaced by aliases in Unity Catalog.
+    D: Model artifacts are stored in managed storage, not in notebooks.
+  chapter_ref: 05-model-lifecycle-uc.md#unity-catalog-registry-vs-workspace-registry
+
+- id: Q-PE1-016
+  objective: S1.16
+  pool: practice
+  type: single
+  difficulty: hard
+  stem: >-
+    Training a large recommendation model costs several thousand dollars of GPU time per run and
+    must happen exactly once per release. Production data may be read in the development workspace.
+    Which promotion strategy fits best?
+  options:
+    A: "Deploy code: rerun training in staging and again in production"
+    B: "Deploy models: train once, then promote the trained model artifact through the environments"
+    C: "Deploy notebooks: let each environment's users train their own copy"
+    D: "Skip staging and train directly in production on every commit"
+  answer: [B]
+  explanation: >-
+    Deploying code is the default, but when training is very expensive and the data is available
+    where the model is trained, promoting the trained model avoids paying for training repeatedly.
+  distractors:
+    A: Retraining in every environment multiplies an expensive training cost.
+    C: Uncontrolled copies break reproducibility and governance.
+    D: Skipping staging removes validation before production.
+  chapter_ref: 01-databricks-ml-platform.md#promoting-code-vs-promoting-models
+
+- id: Q-PE1-017
+  objective: S1.17
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    After validation passes, an automated job must mark version 7 of `prod.retail.demand_model` with
+    `validation=passed`, without affecting other versions. Which call does this?
+  options:
+    A: "client.set_model_version_tag('prod.retail.demand_model', '7', 'validation', 'passed')"
+    B: "client.set_registered_model_tag('prod.retail.demand_model', 'validation', 'passed')"
+    C: "mlflow.set_tag('validation', 'passed')"
+    D: "client.set_registered_model_alias('prod.retail.demand_model', 'passed', '7')"
+  answer: [A]
+  explanation: >-
+    set_model_version_tag tags one version; delete_model_version_tag removes such a tag again.
+  distractors:
+    B: A registered-model tag applies to the model as a whole, not to version 7.
+    C: mlflow.set_tag tags the active run, not a registered model version.
+    D: An alias names a version for loading; it is not a key-value tag.
+  chapter_ref: 05-model-lifecycle-uc.md#tags
+
+- id: Q-PE1-018
+  objective: S1.18
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    Version 4 of `prod.retail.demand_model` currently has the alias `champion` and version 5 has the
+    alias `challenger`. Version 5 performed better in an A/B test. How do you promote it so that jobs
+    loading `models:/prod.retail.demand_model@champion` use it without code changes?
+  options:
+    A: "client.set_registered_model_alias('prod.retail.demand_model', 'champion', '5')"
+    B: "client.transition_model_version_stage('prod.retail.demand_model', '5', 'Production')"
+    C: "Delete version 4 so that version 5 becomes the newest"
+    D: "Change every job to load models:/prod.retail.demand_model/5"
+  answer: [A]
+  explanation: >-
+    Setting the champion alias on version 5 moves it from version 4 in one step; everything that
+    loads @champion picks up version 5.
+  distractors:
+    B: Stages do not exist for models in Unity Catalog.
+    C: Deleting versions loses history and does not move the alias.
+    D: Hard-coding version numbers is exactly what aliases avoid.
+  chapter_ref: 05-model-lifecycle-uc.md#aliases-champion-and-challenger
+
+- id: Q-PE1-019
+  objective: S2.01
+  pool: practice
+  type: single
+  difficulty: easy
+  stem: >-
+    A data scientist needs the count, mean, standard deviation, minimum, quartiles and maximum of
+    every numeric column of a Spark DataFrame `df` as a DataFrame. Which call returns all of these?
+  options:
+    A: "df.describe()"
+    B: "df.summary()"
+    C: "df.count()"
+    D: "df.printSchema()"
+  answer: [B]
+  explanation: >-
+    summary() returns count, mean, stddev, min, 25%, 50%, 75% and max by default; describe() omits
+    the percentiles.
+  distractors:
+    A: describe() returns count, mean, stddev, min and max only — no quartiles.
+    C: count() returns the number of rows.
+    D: printSchema() prints column names and types, no statistics.
+  chapter_ref: 06-exploring-data.md#summary-statistics
+
+- id: Q-PE1-020
+  objective: S2.02
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    The column `delivery_minutes` of a Spark DataFrame is strongly right-skewed and contains a few
+    extreme values. The team wants to remove outliers with a rule that is not distorted by the skew
+    or by the outliers themselves. Which approach fits?
+  options:
+    A: "Keep rows within mean ± 3 standard deviations"
+    B: "Keep rows within [Q1 - 1.5 × IQR, Q3 + 1.5 × IQR], with the quartiles from approxQuantile"
+    C: "Drop the 50 % of rows with the largest values"
+    D: "Replace every value with the column mean"
+  answer: [B]
+  explanation: >-
+    The IQR rule uses quartiles, which are robust to skew and extreme values; the standard-deviation
+    rule assumes a roughly normal distribution and its mean and stddev are inflated by the outliers.
+  distractors:
+    A: Mean and standard deviation are themselves pulled by the outliers and assume symmetry.
+    C: Dropping half the data removes valid observations, not outliers.
+    D: Replacing values destroys the information instead of removing outliers.
+  chapter_ref: 07-cleaning-and-transforming.md#removing-outliers
+
+- id: Q-PE1-021
+  objective: S2.03
+  pool: practice
+  type: multiple
+  difficulty: easy
+  stem: >-
+    A data scientist explores a dataset with the categorical column `region` (6 values) and the
+    continuous column `order_value`. Which TWO visualizations are appropriate?
+  options:
+    A: "A bar chart of the number of orders per region"
+    B: "A histogram of order_value"
+    C: "A histogram of region"
+    D: "A line chart of region over order_value"
+    E: "A pie chart of order_value"
+  answer: [A, B]
+  explanation: >-
+    Categorical features are shown with bar charts of counts; continuous features with histograms
+    (or box plots) that show their distribution.
+  distractors:
+    C: Histograms bin continuous values; region has no numeric scale to bin.
+    D: A line chart implies an ordered x-axis; region is unordered.
+    E: Pie charts show shares of categories, not the distribution of a continuous value.
+  chapter_ref: 06-exploring-data.md#visualising-features
+
+- id: Q-PE1-022
+  objective: S2.04
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist wants to know whether the categorical features `payment_type` and
+    `subscription_tier` are associated. Which method is appropriate?
+  options:
+    A: "Pearson correlation coefficient"
+    B: "A contingency table (crosstab) and a chi-square test of independence"
+    C: "A scatter plot of the two columns"
+    D: "Root mean squared error between the columns"
+  answer: [B]
+  explanation: >-
+    Two categorical features are compared with a contingency table of counts and a chi-square test,
+    for example with DataFrame.crosstab and pyspark.ml.stat.ChiSquareTest.
+  distractors:
+    A: Pearson correlation needs two continuous variables.
+    C: Scatter plots need numeric axes.
+    D: RMSE compares predictions with actual values, not two features.
+  chapter_ref: 06-exploring-data.md#comparing-two-features
+
+- id: Q-PE1-023
+  objective: S2.05
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    The column `annual_income` has 8 % missing values. A histogram shows a long right tail caused by
+    a few very high incomes. Which imputation value is most appropriate, and why?
+  options:
+    A: "The mean, because it uses every value"
+    B: "The median, because it is not pulled towards the extreme values of the skewed distribution"
+    C: "The mode, because income is a categorical feature"
+    D: "Zero, because missing income means no income"
+  answer: [B]
+  explanation: >-
+    For skewed data or data with outliers the median represents a typical value better than the
+    mean; the mean suits roughly symmetric data and the mode suits categorical data.
+  distractors:
+    A: The mean is inflated by the few very high incomes.
+    C: Income is continuous; the mode of a continuous column is not meaningful.
+    D: Missing is not the same as zero; filling zeros biases the feature.
+  chapter_ref: 07-cleaning-and-transforming.md#imputing-missing-values
+
+- id: Q-PE1-024
+  objective: S2.06
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    Which Spark ML code fills missing values of the numeric columns `age` and `tenure` with each
+    column's median, learning the medians from the training DataFrame `train`?
+  options:
+    A: "Imputer(strategy='median', inputCols=['age', 'tenure'], outputCols=['age', 'tenure']).fit(train)"
+    B: "train.fillna('median', subset=['age', 'tenure'])"
+    C: "StringIndexer(inputCols=['age', 'tenure']).fit(train)"
+    D: "Imputer(strategy='mode').transform(train)"
+  answer: [A]
+  explanation: >-
+    pyspark.ml.feature.Imputer is an estimator: fit learns the median of each input column and the
+    resulting model's transform fills the missing values.
+  distractors:
+    B: fillna('median') fills with the literal string 'median', not a statistic.
+    C: StringIndexer converts strings to indices; it does not impute.
+    D: An Imputer must be fitted before it can transform, and mode is not the requested strategy.
+  chapter_ref: 07-cleaning-and-transforming.md#imputing-missing-values
+
+- id: Q-PE1-025
+  objective: S2.07
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    In Spark ML, a string column `color` with the values red, green and blue must be one-hot encoded
+    for a logistic regression. Which sequence of stages is correct?
+  options:
+    A: "OneHotEncoder on color directly"
+    B: "StringIndexer on color, then OneHotEncoder on the resulting index column"
+    C: "VectorAssembler on color, then StringIndexer"
+    D: "OneHotEncoder, then StringIndexer on the resulting vector"
+  answer: [B]
+  explanation: >-
+    Spark ML's OneHotEncoder works on numeric category indices, so strings are first mapped to
+    indices with StringIndexer; the encoder then creates sparse vectors (with dropLast, 2 slots for
+    3 categories).
+  distractors:
+    A: OneHotEncoder needs numeric indices, not strings.
+    C: VectorAssembler only combines numeric columns and cannot take strings.
+    D: The order is reversed; indexing must come first.
+  chapter_ref: 07-cleaning-and-transforming.md#one-hot-encoding
+
+- id: Q-PE1-026
+  objective: S2.08
+  pool: practice
+  type: multiple
+  difficulty: hard
+  stem: >-
+    For which TWO situations is one-hot encoding NOT a good choice?
+  options:
+    A: "A `zip_code` column with 30,000 distinct values used in a gradient-boosted tree model"
+    B: "A `contract_type` column with 3 values used in a linear regression"
+    C: "A `product_id` column with 50,000 values in a tree-based model with limited memory"
+    D: "A `weekday` column with 7 values used in logistic regression"
+    E: "A binary `has_discount` column stored as yes/no for a linear model"
+  answer: [A, C]
+  explanation: >-
+    High-cardinality columns explode into tens of thousands of sparse columns; tree-based models
+    can split on indexed (or target-encoded) categories instead, so one-hot encoding hurts there.
+  distractors:
+    B: Low-cardinality categories in linear models are the classic use case for one-hot encoding.
+    D: Seven categories are easily one-hot encoded for a linear model.
+    E: A binary category becomes a single 0/1 column, which is what one-hot encoding with dropLast produces.
+  chapter_ref: 07-cleaning-and-transforming.md#one-hot-encoding
+
+- id: Q-PE1-027
+  objective: S2.09
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    In which scenario is a log transformation of the target most appropriate?
+  options:
+    A: "Predicting the number of days until delivery, which ranges from -3 to 3 around a promised date"
+    B: "Predicting insurance claim amounts that are positive and strongly right-skewed, with effects that are roughly multiplicative"
+    C: "Predicting a binary churn flag"
+    D: "Predicting a temperature in degrees Celsius that is symmetric around 15"
+  answer: [B]
+  explanation: >-
+    Log transforms suit positive, right-skewed values where effects act multiplicatively; they make
+    the distribution more symmetric and reduce the influence of very large values.
+  distractors:
+    A: The values include negatives, so log is undefined without shifting, and they are not skewed.
+    C: A binary label is not transformed; it is modelled with a classifier.
+    D: A symmetric distribution does not benefit from a log transform.
+  chapter_ref: 07-cleaning-and-transforming.md#log-transformation
+
+- id: Q-PE1-028
+  objective: S3.01
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A streaming service wants to recommend films to users based on a large matrix of user ratings.
+    Which algorithm family is most appropriate?
+  options:
+    A: "Alternating least squares (ALS) collaborative filtering"
+    B: "Linear regression on the film's release year"
+    C: "k-means clustering of film titles"
+    D: "Logistic regression predicting whether a user exists"
+  answer: [A]
+  explanation: >-
+    Recommendations from a user-item rating matrix are a collaborative-filtering problem; Spark ML
+    provides ALS for it.
+  distractors:
+    B: One feature of the film ignores the user's preferences.
+    C: Clustering titles does not use the ratings to personalise recommendations.
+    D: The target makes no sense for recommendation.
+  chapter_ref: 08-ml-foundations.md#choosing-an-algorithm-for-a-scenario
+
+- id: Q-PE1-029
+  objective: S3.02
+  pool: practice
+  type: multiple
+  difficulty: medium
+  stem: >-
+    In a loan dataset only 3 % of applicants default. Which TWO approaches help the model learn the
+    minority class better?
+  options:
+    A: "Give the minority class a higher weight in the loss (class weights)"
+    B: "Oversample defaulters in the training split only"
+    C: "Oversample defaulters before splitting into training and test data"
+    D: "Remove the label column"
+    E: "Evaluate only with accuracy"
+  answer: [A, B]
+  explanation: >-
+    Cost-sensitive learning with class weights and resampling of the training data are standard
+    mitigations; resampling must happen after the split.
+  distractors:
+    C: Oversampling before the split copies minority rows into the test data and inflates the score.
+    D: Without the label there is nothing to learn.
+    E: "Accuracy hides poor minority performance: 97 % is reached by never predicting a default."
+  chapter_ref: 08-ml-foundations.md#class-imbalance
+
+- id: Q-PE1-030
+  objective: S3.03
+  pool: practice
+  type: single
+  difficulty: easy
+  stem: >-
+    In Spark ML, which statement about estimators and transformers is correct?
+  options:
+    A: "An estimator has a fit() method that returns a model; the model is a transformer"
+    B: "A transformer has a fit() method that returns an estimator"
+    C: "VectorAssembler is an estimator because it must learn the vector size"
+    D: "A fitted PipelineModel is an estimator"
+  answer: [A]
+  explanation: >-
+    Estimators learn from data with fit() and return a Model, which transforms DataFrames with
+    transform(); a fitted PipelineModel therefore consists only of transformers.
+  distractors:
+    B: The roles are reversed.
+    C: VectorAssembler is a transformer; it learns nothing from the data.
+    D: A PipelineModel is a transformer.
+  chapter_ref: 09-pipelines.md#estimators-transformers-and-models
+
+- id: Q-PE1-031
+  objective: S3.04
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A Spark ML pipeline is defined as `Pipeline(stages=[indexer, encoder, assembler, rf])`. What does
+    `pipeline.fit(train)` do?
+  options:
+    A: "Fits each estimator stage in order on the output of the previous stages and returns a PipelineModel"
+    B: "Trains only rf and ignores the other stages"
+    C: "Transforms train with every stage and returns a DataFrame"
+    D: "Fits all stages in parallel on the original train DataFrame"
+  answer: [A]
+  explanation: >-
+    Pipeline.fit runs the stages in order: transformers transform, estimators are fitted on the data
+    as transformed so far, and the result is a PipelineModel of fitted transformers.
+  distractors:
+    B: Every estimator stage is fitted, not only the last one.
+    C: fit returns a PipelineModel; calling transform on it returns a DataFrame.
+    D: Stages depend on each other's outputs, so they run sequentially.
+  chapter_ref: 09-pipelines.md#building-a-spark-ml-training-pipeline
+
+- id: Q-PE1-032
+  objective: S3.05
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist tunes a model with Hyperopt and wants to maximise the validation AUC. What
+    should the objective function passed to `fmin` return?
+  options:
+    A: "{'loss': auc, 'status': STATUS_OK}"
+    B: "{'loss': -auc, 'status': STATUS_OK}"
+    C: "{'loss': 1 / auc}"
+    D: "The trained model object"
+  answer: [B]
+  explanation: >-
+    fmin minimises the loss, so to maximise a score you return its negative.
+  distractors:
+    A: Minimising the AUC selects the worst model.
+    C: 1/AUC is monotonic but non-standard, and the status key is missing; negation is the convention.
+    D: The objective must return a loss (a number or a dict with 'loss'), not a model.
+  chapter_ref: 10-validation-and-tuning.md#hyperopt-fmin-on-the-exam
+
+- id: Q-PE1-033
+  objective: S3.06
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A model has six hyperparameters, several of them continuous, and each training run takes
+    20 minutes. The team can afford about 40 runs. Which search method is most suitable?
+  options:
+    A: "Grid search over 10 values per hyperparameter"
+    B: "Bayesian optimisation (for example Hyperopt's TPE), which uses earlier results to pick promising candidates"
+    C: "Trying only the default hyperparameters"
+    D: "Exhaustive search over every possible value"
+  answer: [B]
+  explanation: >-
+    With an expensive objective and a large, continuous space, Bayesian search makes the most of a
+    small budget by learning from previous trials; random search is a reasonable baseline.
+  distractors:
+    A: A 10^6-point grid is impossible with a 40-run budget.
+    C: No tuning at all is not a search method.
+    D: Exhaustive search is infeasible for continuous parameters.
+  chapter_ref: 10-validation-and-tuning.md#search-strategies-grid-random-and-bayesian
+
+- id: Q-PE1-034
+  objective: S3.07
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A data scientist tunes a single-node scikit-learn model with Hyperopt on a classic cluster with
+    eight worker cores and wants trials to run in parallel. What should she change?
+  options:
+    A: "Pass trials=SparkTrials(parallelism=8) to fmin"
+    B: "Convert the model to a Spark ML model first"
+    C: "Increase max_evals to 8"
+    D: "Use Trials() and set n_jobs=8 in fmin"
+  answer: [A]
+  explanation: >-
+    SparkTrials runs each Hyperopt trial as a Spark task, so single-node models are trained in
+    parallel across the cluster; it needs classic compute with a sparkContext.
+  distractors:
+    B: Single-node libraries can be parallelised without rewriting the model.
+    C: max_evals sets how many trials run, not how many run at once.
+    D: Trials runs sequentially on the driver and fmin has no n_jobs argument.
+  chapter_ref: 10-validation-and-tuning.md#parallelising-single-node-models
+
+- id: Q-PE1-035
+  objective: S3.08
+  pool: practice
+  type: multiple
+  difficulty: medium
+  stem: >-
+    A team with 2,000 labelled rows compares k-fold cross-validation with a single train-validation
+    split for model selection. Which TWO statements are correct?
+  options:
+    A: "Cross-validation gives a more reliable performance estimate because every row is used for validation once"
+    B: "Cross-validation trains k times as many models, so it costs more compute"
+    C: "A train-validation split always gives a lower-variance estimate than cross-validation"
+    D: "Cross-validation removes the need for a held-out test set"
+    E: "A train-validation split uses every row for both training and validation"
+  answer: [A, B]
+  explanation: >-
+    Cross-validation averages over k folds, which reduces the variance of the estimate on small
+    datasets, at the price of k times more training.
+  distractors:
+    C: A single split's estimate depends on which rows landed in validation, so its variance is higher.
+    D: A final test set is still needed to report unbiased performance after model selection.
+    E: Each row is either in training or in validation, not both.
+  chapter_ref: 10-validation-and-tuning.md#cross-validation-vs-a-trainvalidation-split
+
+- id: Q-PE1-036
+  objective: S3.09
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A Spark ML pipeline must be tuned over a parameter grid with 4-fold cross-validation as part of
+    fitting. Which code does this?
+  options:
+    A: "CrossValidator(estimator=pipeline, estimatorParamMaps=grid, evaluator=evaluator, numFolds=4).fit(train)"
+    B: "pipeline.fit(train, numFolds=4)"
+    C: "TrainValidationSplit(estimator=pipeline, estimatorParamMaps=grid, evaluator=evaluator, numFolds=4).fit(train)"
+    D: "ParamGridBuilder().addGrid(numFolds, [4]).build()"
+  answer: [A]
+  explanation: >-
+    CrossValidator wraps the pipeline, fits it for every parameter map on every fold, picks the
+    best map by the evaluator and refits it on all training data.
+  distractors:
+    B: Pipeline.fit has no numFolds parameter.
+    C: TrainValidationSplit uses a single split (trainRatio), not folds.
+    D: The number of folds is a CrossValidator setting, not a grid parameter.
+  chapter_ref: 10-validation-and-tuning.md#cross-validation-vs-a-trainvalidation-split
+
+- id: Q-PE1-037
+  objective: S3.10
+  pool: practice
+  type: single
+  difficulty: hard
+  stem: >-
+    A grid search tries max_depth in {4, 6, 8, 10} and learning_rate in {0.05, 0.1} with 5-fold
+    cross-validation. How many models are trained during the search?
+  options:
+    A: "8"
+    B: "13"
+    C: "40"
+    D: "20"
+  answer: [C]
+  explanation: >-
+    4 × 2 = 8 combinations, each trained once per fold: 8 × 5 = 40 (the optional refit of the best
+    combination is not counted, following the exam's convention).
+  distractors:
+    A: Counts combinations but ignores the folds.
+    B: Adds the numbers instead of multiplying.
+    D: Multiplies one grid dimension by the folds and ignores the other.
+  chapter_ref: 10-validation-and-tuning.md#counting-the-models-a-search-trains
+
+- id: Q-PE1-038
+  objective: S3.11
+  pool: practice
+  type: multiple
+  difficulty: medium
+  stem: >-
+    A classifier's predicted probabilities are used to price insurance policies. The team wants one
+    metric that reflects how well calibrated the probabilities are, and one that compares models
+    independently of any decision threshold. Which TWO metrics should they report?
+  options:
+    A: "Accuracy"
+    B: "Log loss"
+    C: "Recall at a threshold of 0.5"
+    D: "ROC AUC"
+    E: "Number of true positives"
+  answer: [B, D]
+  explanation: >-
+    Log loss penalises confident wrong probabilities and rewards well-calibrated ones; ROC AUC
+    summarises ranking quality over all thresholds.
+  distractors:
+    A: Accuracy depends on a threshold and ignores the probability values.
+    C: Recall at one threshold says nothing about other thresholds or calibration.
+    E: A raw count at one threshold says nothing about probability quality.
+  chapter_ref: 11-evaluation.md#classification-metrics
+
+- id: Q-PE1-039
+  objective: S3.12
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    Two regression models predict delivery times. Model A has RMSE 12 and MAE 6; model B has RMSE 9
+    and MAE 7. What does this tell you?
+  options:
+    A: "Model A makes a few large errors that RMSE penalises more strongly than MAE"
+    B: "Model A is better on every metric"
+    C: "RMSE and MAE always rank models identically"
+    D: "Model B explains less variance because its MAE is higher"
+  answer: [A]
+  explanation: >-
+    RMSE squares errors and is dominated by large ones; a big gap between RMSE and MAE indicates a
+    few large errors. Model A has smaller typical errors but worse large errors.
+  distractors:
+    B: Model A has the worse RMSE.
+    C: The example shows they can disagree.
+    D: Explained variance is measured by R-squared, which is not given.
+  chapter_ref: 11-evaluation.md#regression-metrics
+
+- id: Q-PE1-040
+  objective: S3.13
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A spam filter must avoid putting legitimate customer emails into the spam folder, even if some
+    spam gets through. Which metric should the team prioritise for the spam class?
+  options:
+    A: "Precision"
+    B: "Recall"
+    C: "R-squared"
+    D: "MAE"
+  answer: [A]
+  explanation: >-
+    Precision is the share of emails flagged as spam that really are spam; prioritising it keeps
+    false positives (legitimate emails flagged) low.
+  distractors:
+    B: Recall prioritises catching all spam, accepting more false alarms.
+    C: R-squared is a regression metric.
+    D: MAE is a regression metric.
+  chapter_ref: 11-evaluation.md#choosing-the-right-metric
+
+- id: Q-PE1-041
+  objective: S3.14
+  pool: practice
+  type: single
+  difficulty: hard
+  stem: >-
+    A model was trained on `log(price)`. A colleague computes RMSE between the model's raw outputs
+    and the actual prices in dollars and reports a value of 0.4. What is wrong?
+  options:
+    A: "Nothing; RMSE is scale-independent"
+    B: "The predictions are on the log scale and must be exponentiated before comparing with dollar prices"
+    C: "The actual prices must be divided by the number of rows first"
+    D: "RMSE cannot be used for regression"
+  answer: [B]
+  explanation: >-
+    Predictions of a model trained on log(price) are log-prices; exponentiate them (exp, or expm1
+    after log1p) before computing metrics or interpreting them in the original units.
+  distractors:
+    A: RMSE is in the units of the target; mixing log and dollar units gives a meaningless number.
+    C: Dividing by row count is unrelated to the scale mismatch.
+    D: RMSE is a standard regression metric.
+  chapter_ref: 11-evaluation.md#log-transformed-targets-exponentiate-first
+
+- id: Q-PE1-042
+  objective: S3.15
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A gradient-boosted model reaches 99 % accuracy on the training data but only 71 % on validation
+    data. Which change is most likely to help?
+  options:
+    A: "Add more trees and remove the depth limit"
+    B: "Reduce model complexity, for example with a lower max_depth or stronger regularisation"
+    C: "Evaluate on the training data instead"
+    D: "Remove the validation set"
+  answer: [B]
+  explanation: >-
+    A large gap between training and validation performance indicates high variance (overfitting);
+    reducing complexity or adding regularisation (or more data) narrows the gap.
+  distractors:
+    A: More complexity increases overfitting.
+    C: Training accuracy hides overfitting.
+    D: Without validation data the problem cannot be measured.
+  chapter_ref: 08-ml-foundations.md#bias-variance-and-model-complexity
+
+- id: Q-PE1-043
+  objective: S4.01
+  pool: practice
+  type: multiple
+  difficulty: medium
+  stem: >-
+    Which TWO scenarios are best served by batch inference rather than real-time serving?
+  options:
+    A: "Scoring all 20 million customers every night to prepare the next day's marketing list"
+    B: "Approving or declining a card payment while the customer waits at the checkout"
+    C: "Recomputing monthly churn scores that analysts read from a table"
+    D: "Recommending products on a web page as the user scrolls"
+    E: "Detecting fraud in a live chatbot conversation"
+  answer: [A, C]
+  explanation: >-
+    Batch inference suits large volumes where predictions are needed on a schedule and read later;
+    it is the cheapest per prediction. Interactive decisions need real-time serving.
+  distractors:
+    B: The decision must be made within milliseconds, which requires real-time serving.
+    D: Per-request recommendations need real-time responses.
+    E: Live conversations need immediate predictions.
+  chapter_ref: 12-batch-and-streaming-inference.md#choosing-a-serving-approach
+
+- id: Q-PE1-044
+  objective: S4.02
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A team wants its endpoint to return a churn probability and a business rule's recommended action
+    computed from it. What is the recommended way to deploy this logic to Model Serving?
+  options:
+    A: "Wrap the classifier and the rule in an mlflow.pyfunc.PythonModel, log and register it, then serve the registered model"
+    B: "Deploy the classifier and ask every client to implement the business rule"
+    C: "Put the business rule in a SQL view that the endpoint queries"
+    D: "Deploy a notebook as the endpoint"
+  answer: [A]
+  explanation: >-
+    A custom pyfunc model can contain any Python pre- or post-processing; once logged with a
+    signature and registered, Model Serving deploys it like any other MLflow model.
+  distractors:
+    B: Duplicating the rule in every client is error-prone and hard to change.
+    C: Endpoints do not query SQL views as part of a model.
+    D: Notebooks cannot be served as model endpoints.
+  chapter_ref: 13-real-time-serving.md#custom-models
+
+- id: Q-PE1-045
+  objective: S4.03
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A pandas DataFrame `new_customers` with 50,000 rows must be scored with the registered model
+    `prod.crm.churn_model@champion` on a single machine. Which code is correct and efficient?
+  options:
+    A: "model = mlflow.pyfunc.load_model('models:/prod.crm.churn_model@champion'); preds = model.predict(new_customers)"
+    B: "preds = [mlflow.pyfunc.load_model('models:/prod.crm.churn_model@champion').predict(row) for row in new_customers.itertuples()]"
+    C: "preds = mlflow.register_model(new_customers, 'prod.crm.churn_model')"
+    D: "preds = new_customers.apply(mlflow.pyfunc.load_model)"
+  answer: [A]
+  explanation: >-
+    Load the model once and predict the whole DataFrame in one vectorised call.
+  distractors:
+    B: Loading the model inside the row loop loads it 50,000 times.
+    C: register_model registers models; it does not predict.
+    D: apply would call load_model with data, which is meaningless.
+  chapter_ref: 12-batch-and-streaming-inference.md#batch-inference-with-pandas
+
+- id: Q-PE1-046
+  objective: S4.04
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    Click events arrive continuously in a Delta table. The team wants each new event scored by a
+    registered model with as little operational work as possible and compute that scales with the
+    event volume. What should they build?
+  options:
+    A: "A Delta Live Tables pipeline whose streaming table applies the model as a Spark UDF (mlflow.pyfunc.spark_udf)"
+    B: "A notebook that loops forever and calls the model's REST endpoint for each event"
+    C: "A nightly batch job that rescans the whole table"
+    D: "A pandas script on the driver that reads the table every minute"
+  answer: [A]
+  explanation: >-
+    A Delta Live Tables (now Lakeflow) pipeline handles incremental streaming reads, checkpoints and
+    autoscaling; applying the model as a Spark UDF scores records in parallel without network calls.
+  distractors:
+    B: Per-event endpoint calls add latency and a manually managed loop has no checkpoints or autoscaling.
+    C: A nightly batch job is not streaming and reprocesses old rows.
+    D: A single-machine pandas script does not scale with event volume.
+  chapter_ref: 12-batch-and-streaming-inference.md#streaming-inference-with-lakeflow-pipelines
+
+- id: Q-PE1-047
+  objective: S4.05
+  pool: practice
+  type: multiple
+  difficulty: medium
+  stem: >-
+    A model is served on the endpoint `churn-endpoint`. Which TWO ways can a client application use
+    to get real-time predictions?
+  options:
+    A: "POST a JSON body such as {'dataframe_split': {'columns': [...], 'data': [...]}} to /serving-endpoints/churn-endpoint/invocations"
+    B: "Call mlflow.deployments.get_deploy_client('databricks').predict(endpoint='churn-endpoint', inputs=...)"
+    C: "Read the endpoint's Delta table with spark.read.table('churn-endpoint')"
+    D: "Run mlflow.register_model('churn-endpoint', ...)"
+    E: "Open the endpoint's notebook and run all cells"
+  answer: [A, B]
+  explanation: >-
+    Endpoints are queried over REST at /serving-endpoints/<name>/invocations with a token, or from
+    Python with the MLflow deployments client (or the Databricks SDK).
+  distractors:
+    C: An endpoint is not a table.
+    D: Registering a model does not query an endpoint.
+    E: Endpoints do not run notebooks.
+  chapter_ref: 13-real-time-serving.md#querying-an-endpoint
+
+- id: Q-PE1-048
+  objective: S4.06
+  pool: practice
+  type: single
+  difficulty: medium
+  stem: >-
+    A team wants to send 10 % of real-time requests to a new model version while 90 % still go to
+    the current version, on the same endpoint. How do they do this?
+  options:
+    A: "Serve both versions on the endpoint and set a traffic_config with routes of 90 and 10 percent"
+    B: "Create two endpoints and ask clients to pick one at random"
+    C: "Set the alias challenger on the new version; the endpoint splits traffic automatically"
+    D: "Set traffic routes of 90 and 20 percent to leave headroom"
+  answer: [A]
+  explanation: >-
+    An endpoint can serve several models; its traffic configuration routes each request to a served
+    model by percentage, and the percentages must add up to 100.
+  distractors:
+    B: Client-side randomisation is unreliable and duplicates infrastructure.
+    C: Aliases do not change endpoint routing.
+    D: Route percentages must add up to exactly 100.
+  chapter_ref: 13-real-time-serving.md#splitting-traffic-between-models

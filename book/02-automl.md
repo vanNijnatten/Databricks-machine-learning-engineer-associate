@@ -4,7 +4,19 @@ title: AutoML
 objectives: [S1.03, S1.04]
 prerequisites: [4, 8, 11]
 reading_minutes: 50
-references: [automl, mlflow-experiments, how-automl-works, automl-api-reference, automl-classification-data-prep, dbr-18-0-ml, free-edition-limitations]
+tutorial:
+  notebook: notebooks/ch02_automl.py
+  minutes: 45
+  requires: [classic_ml_runtime, unity_catalog]
+  free_edition: read_through
+  cleanup: true
+  extra_files: []
+  steps:
+    - id: run-automl
+      objectives: [S1.03, S1.04]
+    - id: inspect-results
+      objectives: [S1.03, S1.04]
+references: [automl, mlflow-experiments, automl-api-reference, automl-classification-data-prep, dbr-18-0-ml, free-edition-limitations, automl-classification]
 ---
 
 # 2. AutoML
@@ -17,6 +29,8 @@ references: [automl, mlflow-experiments, how-automl-works, automl-api-reference,
 data, trains and tunes many models with several libraries, logs every trial to MLflow and hands you
 the **source code** of each trial. The exam asks how AutoML helps with model and feature selection
 and what it brings to model development.
+
+> **Tutorial:** [`notebooks/ch02_automl.py`](../notebooks/ch02_automl.py) · about 45 minutes · **Requires:** classic ML compute in Dedicated access mode (cluster DBUs for about 15 minutes) · **Free Edition:** no — read it instead of running it · **Clean-up:** terminate the cluster. Run [`notebooks/00_setup.py`](../notebooks/00_setup.py) once first.
 
 ## Learning objectives
 
@@ -41,7 +55,7 @@ and what it brings to model development.
 <!-- objectives: S1.03, S1.04 -->
 
 AutoML supports **classification**, **regression** and **forecasting**. For classification and
-regression it ([How Databricks AutoML works](https://docs.databricks.com/aws/en/machine-learning/automl/how-automl-works),
+regression it ([How Databricks AutoML works](https://docs.databricks.com/aws/en/machine-learning/automl/),
 [Data preparation for classification](https://docs.databricks.com/aws/en/machine-learning/automl/classification-data-prep)):
 
 1. **Prepares the data**
@@ -117,7 +131,7 @@ engineering and domain knowledge; and it consumes cluster time for the whole bud
 <!-- objectives: S1.03, S1.04 -->
 
 **UI:** open **Experiments** in the sidebar and pick the classification, regression or forecasting
-AutoML option ([MLflow experiments](https://docs.databricks.com/aws/en/mlflow/experiments)): choose the
+AutoML option ([MLflow experiments](https://docs.databricks.com/aws/en/mlflow/experiments), [Classification with AutoML](https://docs.databricks.com/aws/en/machine-learning/automl/classification)): choose the
 compute, problem type, table, prediction target, evaluation metric and timeout, and optionally
 untick columns or set imputation per column. Click **Start AutoML**.
 

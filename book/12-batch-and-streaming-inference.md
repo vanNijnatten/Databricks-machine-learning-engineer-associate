@@ -4,6 +4,22 @@ title: Batch and streaming inference
 objectives: [S4.01, S4.03, S4.04]
 prerequisites: [5, 9]
 reading_minutes: 70
+tutorial:
+  notebook: notebooks/ch12_inference.py
+  minutes: 45
+  requires: [unity_catalog, lakeflow]
+  free_edition: partial
+  cleanup: false
+  extra_files: [notebooks/ch12_pipeline_source.py]
+  steps:
+    - id: pandas-batch
+      objectives: [S4.03]
+    - id: spark-udf
+      objectives: [S4.01]
+    - id: structured-streaming
+      objectives: [S4.01, S4.04]
+    - id: lakeflow-pipeline
+      objectives: [S4.04]
 references: [model-inference, ai-query, lakeflow-pipelines, lakeflow-transform, lakeflow-python-ref, model-serving, model-lifecycle-uc]
 ---
 
@@ -16,6 +32,8 @@ A registered model creates value only when it scores new data. Databricks offers
 that — **batch**, **streaming** and **real-time** — and the exam asks you to pick the right one,
 to run batch inference with pandas, and to know how streaming inference works in a Lakeflow pipeline
 (formerly Delta Live Tables). Real-time serving gets its own chapter (13).
+
+> **Tutorial:** [`notebooks/ch12_inference.py`](../notebooks/ch12_inference.py) · about 45 minutes · **Requires:** Unity Catalog; a Lakeflow pipeline for the last step; run the chapter 5 tutorial first · **Free Edition:** partly · **Clean-up:** delete the pipeline. Run [`notebooks/00_setup.py`](../notebooks/00_setup.py) once first.
 
 ## Learning objectives
 
