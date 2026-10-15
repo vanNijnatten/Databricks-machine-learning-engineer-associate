@@ -84,7 +84,10 @@ def spark() -> Iterator["SparkSession"]:
     )
     session.sparkContext.setLogLevel("ERROR")
     yield session
-    session.stop()
+    try:
+        session.stop()
+    except Exception:  # noqa: BLE001 - the JVM may already be gone at interpreter shutdown; nothing to clean up
+        pass
 
 
 @pytest.fixture

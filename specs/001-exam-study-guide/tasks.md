@@ -209,7 +209,7 @@ description: "Task list for the exam-aligned study guide and tutorial"
 - [X] T109 [US1] Write `book/introduction.md` (front matter, not a numbered chapter): exam facts (48 scored questions, 90 minutes, online proctored, no aids, 2-year validity; unscored items possible), how to register, how the book maps to the four sections (link coverage table), how to use chapters/tutorials/questions/plans, runtime target and docs snapshot date (`databricks_runtime`, `docs_snapshot` from `runtime.toml`), workspace options (Free Edition vs trial/paid, see research R14), exam-guide version and "check for a newer guide two weeks before your exam" (FR-021); recommended reading order (link to Appendix C)
 - [X] T110 [US1] Implement Appendix A rendering in `src/db_ml_associate/cli/appendix.py` (`book render-appendix-a` writes the table from `platform-changes.yaml`) with tests in `tests/cli/test_appendix.py`, and generate `book/appendix-a-exam-vs-platform.md`
 - [X] T111 [US1] Run `uv run db-ml-associate book coverage --write` to fill `book/README.md`; resolve every gap until all 48 objectives have ≥ 1 chapter section and ≥ 1 question (SC-001)
-- [ ] T112 [US1] Run `uv run db-ml-associate book check --strict` and `uv run pytest`; fix all errors (SC-006, SC-007)
+- [X] T112 [US1] Run `uv run db-ml-associate book check --strict` and `uv run pytest`; fix all errors (SC-006, SC-007)
 
 **Checkpoint**: The book alone is a complete study resource (MVP).
 
@@ -302,8 +302,8 @@ description: "Task list for the exam-aligned study guide and tutorial"
 - [X] T151 [P] Update `.specify/memory/constitution.md` Sync Impact Report follow-up TODOs: mark the Python-version mismatch and README placeholder as resolved (PATCH version bump via `/speckit-constitution` if required by governance)
 - [X] T152 [P] Add a "Runtime upgrade checklist" section to `docs/CONTRIBUTING.md`: (1) update `runtime.toml` and `pyproject.toml` pins from the new Runtime ML LTS release notes, (2) run `pytest` and `book check --strict`, (3) run all notebooks and `notebooks/00_run_workspace_tests.py` on the new runtime, (4) re-verify every `book/references.yaml` entry, (5) update `book/exam/platform-changes.yaml` and `book/exam/tutorial-verification.md` (constitution governance; SC-004)
 - [ ] T153 Proofread all chapters for clarity (terms defined on first use, descriptive names, consistent exam-term vs current-term usage) and run `uv run db-ml-associate book sync-snippets --check` — *Partial (2026-10-15): automated sweep done (terminology variants, exam-term/current-term pairing, leftover markers, doubled words, `sync-snippets --check`); a human read-through for clarity and first-use definitions is still open.*
-- [ ] T154 Run full gates: `uv run pre-commit run --all-files`, `uv run pytest --cov=src`, `uv run bandit -c pyproject.toml -r src`, `uv run db-ml-associate book check --strict`
-- [ ] T155 Execute [quickstart.md](quickstart.md) sections 1–5 end to end and record results in `book/exam/tutorial-verification.md`
+- [X] T154 Run full gates: `uv run pre-commit run --all-files`, `uv run pytest --cov=src`, `uv run bandit -c pyproject.toml -r src`, `uv run db-ml-associate book check --strict`
+- [X] T155 Execute [quickstart.md](quickstart.md) sections 1–5 end to end and record results in `book/exam/tutorial-verification.md`
 - [ ] T156 Pilot walkthrough (quickstart section 6): one learner follows a plan, records actual minutes per day and practice-exam section scores; adjust chapter `reading_minutes`/`tutorial_minutes` and plans if actuals deviate > 20 %
 
 ---
