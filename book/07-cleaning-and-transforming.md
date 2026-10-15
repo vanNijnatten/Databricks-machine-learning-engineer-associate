@@ -164,7 +164,9 @@ indexed = [f"{column}_index" for column in columns]
 encoded = [f"{column}_vector" for column in columns]
 pipeline = Pipeline(
     stages=[
-        StringIndexer(inputCols=list(columns), outputCols=indexed, handleInvalid="keep" if keep_unseen else "error"),
+        StringIndexer(
+            inputCols=list(columns), outputCols=indexed, handleInvalid="keep" if keep_unseen else "error"
+        ),
         OneHotEncoder(inputCols=indexed, outputCols=encoded),  # dropLast=True drops one slot
     ]
 )
